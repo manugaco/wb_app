@@ -1,6 +1,6 @@
 # Data Tidyng
 
-The purpose of this project is to perform a shiny app using data from the INE, in order to create interactive charts and heat maps about demographic and economic data.
+The purpose of this project is to perform a shiny app using data from the Word Bank, in order to create interactive charts and heat maps about economic and demographic data.
 
 The dataset is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
 
@@ -10,5 +10,5 @@ The dataset is made up with information about topics such as Ecomomic growth, De
  - Trade: Goods trade, tools duties, import terms, international tourism, logistic performance and taxes.
  - Science and tech: High-tech exports, R&D expenses, papers published, Researchers, patents request and intellectual property costs.
 
-We are going to use Shiny and Dash technologies to develop the project, so R and python are goint to be the programming languages used to do it.
+We are going to use both, Shiny and Dash technologies to develop the project, so R and python are goint to be the programming languages used to do it.
 
