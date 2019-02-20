@@ -1,4 +1,4 @@
-# Data Tidying
+# Data Tidying Project
 
 The purpose of this project is to perform a Shiny/Dash app using data from the Word Bank, in order to create interactive charts and heat maps about economic and demographic data.
 
