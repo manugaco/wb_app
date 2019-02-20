@@ -1,8 +1,8 @@
-# Data Tidying Project
+## Data Tidying Project
 
 The purpose of this project is to perform a Shiny/Dash app using data from the Word Bank, in order to create interactive charts and heat maps about economic and demographic data.
 
-The data we are going to use comes from the World Bank, and it is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
+The data that we are going to use comes from the World Bank db, and it is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
 
  - Economy and Growth: GDPpc, Inflation, Trade Balance, Goberment debt, consumption and expenses.
  - Demography: Total population, active population, unemployment rate, life expectancy, birth rate and death rate.
@@ -19,4 +19,4 @@ The app will contain the following information, divided in four sections
  - Third section: Time series of the selected variable, interactive chart.
  - Four section: World heat map, representing the selected variable, and interacting with the third section (time series).
 
-![alt text](https://github.com/manugaco/Data_Tidying/blob/master/panel%20data.png)
+![image alt ><](https://github.com/manugaco/Data_Tidying/blob/master/panel%20data.png)
