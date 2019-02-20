@@ -1,6 +1,6 @@
 # Data Tidying
 
-The purpose of this project is to perform a shiny app using data from the Word Bank, in order to create interactive charts and heat maps about economic and demographic data.
+The purpose of this project is to perform a Shiny/Dash app using data from the Word Bank, in order to create interactive charts and heat maps about economic and demographic data.
 
 The dataset is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
 
