@@ -2,7 +2,7 @@
 
 The purpose of this project is to perform a Shiny/Dash app using data from the Word Bank, in order to create interactive charts and heat maps about economic and demographic data.
 
-The dataset is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
+The data we are going to use comes from the World Bank, and it is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
 
  - Economy and Growth: GDPpc, Inflation, Trade Balance, Goberment debt, consumption and expenses.
  - Demography: Total population, active population, unemployment rate, life expectancy, birth rate and death rate.
