@@ -1,5 +1,7 @@
 ## Data Tidying Project
 
+_Antonio Polo de Alvarado - Manuel García Corbí_
+
 The purpose of this project is to perform a Shiny/Dash app using data from the Word Bank, in order to create interactive charts and heat maps about economic and demographic data.
 
 The data that we are going to use comes from the World Bank db, and it is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
