@@ -18,3 +18,5 @@ The app will contain the following information, divided in four sections
  - Second section (divided in six): Main variables about a topic (among a list of topics).
  - Third section: Time series of the selected variable, interactive chart.
  - Four section: World heat map, representing the selected variable, and interacting with the third section (time series).
+
+![alt text](https://github.com/manugaco/Data_Tidying/blob/master/panel%20data.png)
