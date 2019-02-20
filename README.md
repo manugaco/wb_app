@@ -19,4 +19,12 @@ The app will contain the following information, divided in four sections
  - Third section: Time series of the selected variable, interactive chart.
  - Four section: World heat map, representing the selected variable, and interacting with the third section (time series).
 
+img[alt$="><"] {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+  float: none!important;
+}
+
 ![image alt ><](https://github.com/manugaco/Data_Tidying/blob/master/panel%20data.png)
