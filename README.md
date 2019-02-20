@@ -15,6 +15,6 @@ We are going to use both, Shiny and Dash technologies to develop the project, so
 The app will contain the following information, divided in four sections
 
  - First section: Name of the country and some relevant information such as population, uneployment rate, and so on.
- - Second section, divided in six: Main variables about a topic (among a list of topics).
- - Third section: Time series of a selected variable, interactive chart.
+ - Second section (divided in six): Main variables about a topic (among a list of topics).
+ - Third section: Time series of the selected variable, interactive chart.
  - Four section: World heat map, representing the selected variable, and interacting with the third section (time series).
