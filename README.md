@@ -6,7 +6,7 @@ The purpose of this project is to perform a Shiny/Dash app using data from the W
 
 The data that we are going to use is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
 
- - Economy and Growth: GDPpc, Inflation, Trade Balance, Goberment debt, consumption and expenses.
+ - Economy and Growth: GDPpc, Inflation, Trade Balance, Goverment debt, consumption and expenses.
  - Demography: Total population, active population, unemployment rate, life expectancy, birth rate and death rate.
  - Education: Education expenses, compulsory education, literacy rate, secondary transitions, trained teachers and repeaters.
  - Trade: Goods trade, tools duties, import terms, international tourism, logistic performance and taxes.
@@ -16,7 +16,7 @@ We are going to use both, Shiny and Dash technologies to develop the project, so
 
 The app will contain the following information, divided in four sections
 
- - First section: Name of the country and some relevant information such as population, uneployment rate, and so on.
+ - First section: Name of the country and some relevant information such as population, unemployment rate, and so on.
  - Second section (divided in six): Main variables about a topic (among a list of topics).
  - Third section: Time series of the selected variable, interactive chart.
  - Four section: World heat map, representing the selected variable, and interacting with the third section (time series).
