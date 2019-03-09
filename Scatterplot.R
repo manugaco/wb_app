@@ -1,11 +1,4 @@
 
-#Libraries
-
-library(shiny)
-library(tidyverse)
-library(WDI)
-library(wbstats)
-library(progress)
 
 #Variables
 
@@ -41,6 +34,4 @@ paste(v1, v2, sep = " vs ")
 ggplot(data = df, aes(x=x, y=y, color=region, size= x)) +
   geom_point() +
   ggtitle(paste(v2, v1, sep = " vs "))
-
-
 

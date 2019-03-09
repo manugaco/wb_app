@@ -1,13 +1,13 @@
 
-
 #This is the variable selection
-vs <- indicators_name[10]
 
-#This is the year selected
-years <- seq(1960, 2018, by = 1)
-yr <- years[55]
-
+vs <- indicators_name[12]
 var <- list[[vs]]
+
+#Select the country
+
+count <- seq(1, 217, by = 1)
+cnt <- count[122]
 
 #List of countries from wbstats package (in order to have a reference list of countries to match maps and source[var])
 countries_ls <- wbcountries(lang = 'en')
@@ -48,36 +48,21 @@ for(i in 1:length(bad)){
 df <- left_join(map, var, by = c('region' = 'country'))
 df <- df[!duplicated(df$region), ]
 
-#Removing unnecessary columns
+#Selecting the country and formating the input of the plot
 
-df <- df %>% select(region, which(colnames(df) == yr), group, long, lat)
+rownames(df) <- seq(1, nrow(df), by = 1)
+df2 <- df[which(rownames(df) == cnt),]
+ts <- t(df2[,-(1:14)])
+ts <- cbind(rownames(ts), ts[,1])
+colnames(ts) <- c("year", "region")
+rownames(ts) <- seq(1, nrow(ts), by = 1)
+ts <- data.frame(ts, stringsAsFactors = FALSE)
+ts$region <- round(as.numeric(ts[,2]), 3)
 
-#Removing extreme values
+#Plotting the time series
 
-if(vs == indicators_name[1]){
-  df <- df[-(which(df[, (names(df) %in% yr)] > 70000)),]
-}
-
-if(vs == indicators_name[4]){
-  df <- df[-(which(df[, (names(df) %in% yr)] > 200)),]
-}
+plot_ly(ts, x = ~year, y = ~region, type = 'scatter', mode = 'lines') %>%
+  layout(
+    title = paste(vs, df2$region, sep = " of "), yaxis = list(title = vs))
 
 
-#Plotting the variablae in the map
-
-fill <- df[, (names(df) %in% yr)]
-
-colors <- c("magma", "plasma", "inferno", "viridis", "cividis")
-
-ggplot() +
-  geom_map(data = df, map = df,
-           aes(x=long, y=lat, group = group, map_id = region),
-           fill="white", colour="black", size=0.5) +
-  geom_map(data = df, map = map, aes(fill = fill, map_id = region),
-          colour="black", size=0.5) + 
-  scale_fill_viridis(option = colors[4], guide = "colorbar",
-                     na.value = "grey") +
-  coord_map("rectangular", lat0=0, xlim=c(-180,180), ylim=c(-60, 90)) +
-  theme_bw() + 
-  theme(panel.border = element_blank()) +
-  theme(legend.position="bottom", legend.box = "horizontal") + labs(fill=vs) 
