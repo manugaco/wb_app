@@ -8,7 +8,7 @@ library(wbstats)
 library(progress)
 
 #This is the variable selection
-vs <- indicators_name[8]
+vs <- indicators_name[10]
 
 #This is the year selected
 years <- seq(1960, 2018, by = 1)
@@ -69,9 +69,12 @@ if(vs == indicators_name[4]){
   df <- df[-(which(df[, (names(df) %in% yr)] > 200)),]
 }
 
+
 #Plotting the variablae in the map
 
 fill <- df[, (names(df) %in% yr)]
+
+colors <- c("magma", "plasma", "inferno", "viridis", "cividis")
 
 ggplot() +
   geom_map(data = df, map = df,
@@ -79,8 +82,8 @@ ggplot() +
            fill="white", colour="black", size=0.5) +
   geom_map(data = df, map = map, aes(fill = fill, map_id = region),
           colour="black", size=0.5) + 
-  scale_fill_viridis(option = 'cividis', guide = "colorbar",
-                     na.value = "grey50") +
+  scale_fill_viridis(option = colors[4], guide = "colorbar",
+                     na.value = "grey") +
   coord_map("rectangular", lat0=0, xlim=c(-180,180), ylim=c(-60, 90)) +
   theme_bw() + 
   theme(panel.border = element_blank()) +
