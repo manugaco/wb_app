@@ -13,26 +13,42 @@ library(shiny)
 library(shinythemes)
 library(shinydashboard)
 library(markdown)
+library(plotly)
 
 # Image URL 
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(theme = shinytheme("superhero"),
+ui <- fluidPage(
+  
+  theme = shinytheme("slate"),
                 
-                navbarPage(title=div(div(id = "img-id",img(src="wb.png")),"WORLD BANK"),
-                           tabPanel("TIME SERIE",icon=icon("fas fa-chart-line")),
-                           tabPanel("WORLD MAP",icon=icon("far fa-globe")),
-                           tabPanel("SCATTER PLOT",icon=icon("bar-chart-o")),
-                           navbarMenu("INFO",icon=icon("far fa-info"),
-                                      tabPanel("PARTICIPANTS",icon=icon("fas fa-user")),
-                                      tabPanel("DATASET",icon=icon("fas fa-database")))
-                )
+                navbarPage(title="WORLD BANK",
+                           tabPanel(title="TIME SERIE",icon=icon("fas fa-chart-line")),
+                           
+                           tabPanel(title="WORLD MAP",icon=icon("far fa-globe")),
+                                    
+                           
+                           tabPanel(title="VISUAL DATA ANALYSIS",icon=icon("bar-chart-o")),
+                           
+                           navbarMenu(title="INFO",icon=icon("far fa-info"),
+                                      tabPanel(title="PARTICIPANTS",icon=icon("fas fa-user")),
+                                      tabPanel(title="DATASET",icon=icon("fas fa-database")))
+                          
+                           
                 
+  )
 )
+
+
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+
    
+
+  
 }
 
 
