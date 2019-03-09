@@ -2,8 +2,8 @@
 
 #Variables
 
-v1 <- indicators_name[12]
-v2 <- indicators_name[3]
+v1 <- indicators_name[10]
+v2 <- indicators_name[1]
 
 var1 <- list[[v1]]
 var2 <- list[[v2]]
@@ -11,7 +11,7 @@ var2 <- list[[v2]]
 #Years
 
 years <- seq(1960, 2018, by = 1)
-yr <- years[55]
+yr <- years[50]
 
 #Merging the dataset in one
 

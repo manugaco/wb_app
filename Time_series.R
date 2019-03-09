@@ -7,7 +7,7 @@ var <- list[[vs]]
 #Select the country
 
 count <- seq(1, 217, by = 1)
-cnt <- count[122]
+cnt <- count[sample(1:217, 1)]
 
 #List of countries from wbstats package (in order to have a reference list of countries to match maps and source[var])
 countries_ls <- wbcountries(lang = 'en')
@@ -47,7 +47,7 @@ for(i in 1:length(bad)){
 
 df <- left_join(map, var, by = c('region' = 'country'))
 df <- df[!duplicated(df$region), ]
-
+df$region
 #Selecting the country and formating the input of the plot
 
 rownames(df) <- seq(1, nrow(df), by = 1)
