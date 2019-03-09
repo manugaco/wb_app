@@ -7,6 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
+library(shiny)
 library(tidyverse)
 library(WDI)
 library(wbstats)
