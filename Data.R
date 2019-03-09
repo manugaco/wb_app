@@ -89,5 +89,5 @@ for(i in 1:length(indicators_code)){
 
 #Naming the list and selecting country names only
 
-names(list) <- names(indicators_name)
+names(list) <- indicators_name
 

@@ -12,7 +12,7 @@ vs <- indicators_name[1]
 
 #This is the year selected
 years <- seq(1960, 2018, by = 1)
-yr <- year[1]
+yr <- years[55]
 
 var <- list[[vs]]
 
@@ -56,20 +56,22 @@ df <- df[!duplicated(df$region), ]
 
 #Removing extreme values
 
-if(vs == 1){
-  df <- df[-(which(df[,"yr"] > 70000)),]
+if(vs == indicators_name[1]){
+  df <- df[-(which(df[, (names(df) %in% yr)] > 70000)),]
 }
 
 #Plotting the variablae in the map
+
+fill <- df[, (names(df) %in% yr)]
 
 ggplot() +
   geom_map(data = df, map = df,
            aes(x=long, y=lat, group = group, map_id = region),
            fill="white", colour="black", size=0.5) +
-  geom_map(data = df, map = map, aes(fill=yr, map_id = region),
+  geom_map(data = df, map = map, aes(fill=fill, map_id = region),
           colour="black", size=0.5) + 
-  scale_fill_viridis(option = 'plasma', guide = "colorbar") +
+  scale_fill_viridis(option = 'viridis', guide = "colorbar") +
   coord_map("rectangular", lat0=0, xlim=c(-180,180), ylim=c(-60, 90)) +
   theme_bw() + 
   theme(panel.border = element_blank()) + 
-  ggtitle(indicators_name[vs])
+  ggtitle(vs)
