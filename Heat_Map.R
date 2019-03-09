@@ -7,7 +7,12 @@ library(WDI)
 library(wbstats)
 library(progress)
 
-vs <- 3 #This is the variable selection
+#This is the variable selection
+vs <- indicators_name[1]
+
+#This is the year selected
+years <- seq(1960, 2018, by = 1)
+yr <- year[1]
 
 var <- list[[vs]]
 
@@ -49,9 +54,11 @@ for(i in 1:length(bad)){
 df <- left_join(map, var, by = c('region' = 'country'))
 df <- df[!duplicated(df$region), ]
 
-#Remove extreme values
-if(vs == 1)
-#df <- df[-(which(df$`2014` > 70000)),]
+#Removing extreme values
+
+if(vs == 1){
+  df <- df[-(which(df[,"yr"] > 70000)),]
+}
 
 #Plotting the variablae in the map
 
@@ -59,7 +66,7 @@ ggplot() +
   geom_map(data = df, map = df,
            aes(x=long, y=lat, group = group, map_id = region),
            fill="white", colour="black", size=0.5) +
-  geom_map(data = df, map = map, aes(fill=`2010`, map_id = region),
+  geom_map(data = df, map = map, aes(fill=yr, map_id = region),
           colour="black", size=0.5) + 
   scale_fill_viridis(option = 'plasma', guide = "colorbar") +
   coord_map("rectangular", lat0=0, xlim=c(-180,180), ylim=c(-60, 90)) +
