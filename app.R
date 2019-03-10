@@ -24,6 +24,8 @@ library(maps)
 library(viridis)
 library(mapproj)
 library(plotly)
+library(mapdata)
+library(ggthemes)
 
 source("Data.R")
 
@@ -250,4 +252,4 @@ shinyApp(ui = ui, server = server)
 #rsconnect::setAccountInfo(name='manugaco',
                           #token='7B67C1050D3D1BA3206C78B5F9DEC18F',
                           #secret='A+LV652hIeKPi/BrNaI9hk0CQ/L2NDL+q0GE6jl9')
-rsconnect::deployApp()
+#rsconnect::deployApp()

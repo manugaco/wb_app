@@ -1,11 +1,4 @@
 
-#Libraries
-
-library(shiny)
-library(tidyverse)
-library(WDI)
-library(wbstats)
-library(progress)
 
 #Loading dataset from World Bank API using the "WDI"
 
