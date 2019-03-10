@@ -59,8 +59,8 @@ ui <- fluidPage(
   ,
                                     
                            
-                           tabPanel(title="WORLD MAP",icon=icon("far fa-globe"),
-                                    titlePanel("World Map"),
+                           tabPanel(title="WORLD HEAT MAP",icon=icon("far fa-globe"),
+                                    titlePanel("World Heat Map"),
                                     
                                     sidebarPanel(
                                       
@@ -88,11 +88,13 @@ ui <- fluidPage(
                                       
                                       # Input: Selector for choosing dataset ----
                                       selectInput(inputId = "variable_1",
-                                                  label = "Choose first variable:",
-                                                  choices = names(list)),
+                                                  label = "Choose variable for y-axis:",
+                                                  choices = names(list),
+                                                  value = names(list[1])),
                                       selectInput(inputId = "variable_2",
-                                                  label = "Choose second variable:",
-                                                  choices = names(list)),
+                                                  label = "Choose variable for x-axis:",
+                                                  choices = names(list),
+                                                  value = names(list[12])),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
@@ -112,8 +114,7 @@ ui <- fluidPage(
                                       tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"))
                           
   
-)
-)
+))
 
 
 server <- function(input, output) {
@@ -127,6 +128,8 @@ server <- function(input, output) {
     #Selecting those countries that are available in the dataset
     var_ts = var_ts[which(var_ts$country %nin% setdiff(var_ts$country, countries)), ]
     
+    #Selecting those countries that are available in the dataset
+    var = var[which(var$country %nin% setdiff(var$country, countries)), ]
     #Deleting countries without position information
     
     no_pos <- c("Channel Islands","Eswatini", "Gibraltar", "Hong Kong SAR, China", "Korea, Dem. People’s Rep.",
@@ -135,35 +138,13 @@ server <- function(input, output) {
     for(i in 1:length(no_pos)){
       var_ts <- var_ts[!var_ts$country == no_pos[i], ]
     
-      }
-    
-    #Extracting the countries list from world map package
-    map <- map_data('world')
-    #map <- map[!duplicated(map$region), ]
-    map_ts <- fortify(map)
-    
-    #There are some country names that does not match, some tidy is necessary
-    
-    bad <- c("Antigua", "Bahamas", "Virgin Islands", "Brunei", "Cape Verde", 
-             "Democratic Republic of the Congo", "Republic of Congo", "Ivory Coast", "Egypt", "Gambia",
-             "Iran", "North Korea", "Kyrgyzstan", "Laos", "Macedonia", "Micronesia", "Russia", "Sint Marteen",
-             "Slovakia", "Saint Kitts", "Saint Lucia", "Saint Martin", "Saint Vincent", "Syria", "Trinidad",
-             "UK","USA", "Venezuela", "Virgin Islands", "Yemen")
-    
-    good <- sort(setdiff(var_ts$country, map_ts$region))
-    
-    for(i in 1:length(bad)){
-      map_ts <- map_ts %>% mutate(region = if_else(region == bad[i], good[i], region))
     }
     
-    df_ts <- left_join(map_ts, var_ts, by = c('region' = 'country'))
-    df_ts <- df_ts[!duplicated(df_ts$region), ]
-
     #Selecting the country and formating the input of the plot
     
-    rownames(df_ts) <- seq(1, nrow(df_ts), by = 1)
-    df2_ts <- df_ts[which(df_ts$region == input$country_ts),]
-    ts <- t(df2_ts[,-(1:14)])
+    rownames(var_ts) <- seq(1, nrow(var_ts), by = 1)
+    df2 <- var_ts[which(var_ts$country == input$country_ts),]
+    ts <- t(df2[,-(1:9)])
     ts <- cbind(rownames(ts), ts[,1])
     colnames(ts) <- c("year", "region")
     rownames(ts) <- seq(1, nrow(ts), by = 1)
@@ -172,9 +153,12 @@ server <- function(input, output) {
     
     #Plotting the time series
     
-    plot_ly(ts, x = ~year, y = ~region, type = 'scatter', mode = 'lines') %>%
-      layout(
-        title = paste(input$variable_ts, df2_ts$region, sep = " of "), yaxis = list(title = input$variable_ts))
+    plot_ly(ts, x = ~year, y = ~region, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
+      layout(title = input$country,
+             yaxis = list(title = input$variable_ts, color = 'white'),
+             xaxis = list(title = 'year', tickangle = 45, color = 'white'),
+             plot_bgcolor='rgb(150,150,150)', 
+             paper_bgcolor = 'rgb(100,100,100)')
   })
   
   output$mp = renderPlot({
@@ -243,7 +227,7 @@ server <- function(input, output) {
                colour="black", size = 0.5) + labs(fill="") + ggtitle(input$variable_mp) +
       scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','red4')
                            ,values = scales::rescale(c(100,96581,822675,3190373,10000000))
-      ) +
+      ) + xlab("") + ylab("") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,plot.subtitle = element_text(size = 14)
@@ -292,12 +276,13 @@ server <- function(input, output) {
     
     ggplot(data = df_vda, aes(x=log(x), y=log(y), color = income)) +
       geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
-      xlab("") + ylab("") + 
+      xlab(input$variable_2) + ylab(input$variable_1) + 
       scale_colour_discrete(name = "income", 
                             breaks = levels(df_vda$region),
                             labels = levels(df_vda$region)) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
             ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
             ,legend.background = element_blank()
