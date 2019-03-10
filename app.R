@@ -106,9 +106,19 @@ ui <- fluidPage(
                            
                            navbarMenu(title="INFO",icon=icon("far fa-info"),
                                       tabPanel(title="PARTICIPANTS",icon=icon("fas fa-user")),
+<<<<<<< HEAD
                                       tabPanel(title="DATASET",icon=icon("fas fa-database")))
                         ))
 
+=======
+                                      tabPanel(title="DATASET",icon=icon("fas fa-database"))),
+                           
+                           tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"))
+                          
+  
+)
+)
+>>>>>>> 651058d4a0c5654010a979af50726783df27abfe
 
 
 server <- function(input, output) {
