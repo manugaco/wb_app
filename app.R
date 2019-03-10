@@ -25,7 +25,7 @@ library(viridis)
 library(mapproj)
 library(plotly)
 
-#source("Data.R")
+source("Data.R")
 
 # Image URL 
 
@@ -72,7 +72,7 @@ ui <- fluidPage(
                                                   max = 2018,
                                                   value = 1990),
                                       selectInput(inputId = "color",
-                                                  label = "Choose a color gradiant:",
+                                                  label = "Choose the color gradient:",
                                                   choices = c("magma", "plasma", "inferno", "viridis", "cividis")
                                       
                                     )),
@@ -142,11 +142,11 @@ server <- function(input, output) {
     
     df <- left_join(map, var, by = c('region' = 'country'))
     df <- df[!duplicated(df$region), ]
-    df$region
+
     #Selecting the country and formating the input of the plot
     
     rownames(df) <- seq(1, nrow(df), by = 1)
-    df2 <- df[which(df$region== input$country),]
+    df2 <- df[which(df$region == input$country),]
     ts <- t(df2[,-(1:14)])
     ts <- cbind(rownames(ts), ts[,1])
     colnames(ts) <- c("year", "region")
@@ -236,19 +236,20 @@ server <- function(input, output) {
       theme_bw() + 
       theme(panel.border = element_blank()) + 
       ggtitle(input$variable) +
-      theme(legend.position="bottom", legend.box = "horizontal") + labs(fill=input$variable)
+      theme(legend.position = "bottom", legend.box = "horizontal") + labs(fill = input$variable)
     
     
     
   })
    
 }
-  
-  
-
-
 
 
 # Run the application 
 shinyApp(ui = ui, server = server)
 
+#Uploading application
+#rsconnect::setAccountInfo(name='manugaco',
+                          #token='7B67C1050D3D1BA3206C78B5F9DEC18F',
+                          #secret='A+LV652hIeKPi/BrNaI9hk0CQ/L2NDL+q0GE6jl9')
+rsconnect::deployApp()
