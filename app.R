@@ -27,6 +27,7 @@ library(plotly)
 library(mapdata)
 library(ggthemes)
 library(viridisLite)
+library(viridis)
 
 #source("Data.R")
 
