@@ -107,11 +107,9 @@ ui <- fluidPage(
                            navbarMenu(title="INFO",icon=icon("far fa-info"),
                                       tabPanel(title="PARTICIPANTS",icon=icon("fas fa-user")),
                                       
-                                      tabPanel(title="DATASET",icon=icon("fas fa-database")))
-                        ))
                                       tabPanel(title="DATASET",icon=icon("fas fa-database"))),
                            
-                           tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"))
+                                      tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"))
                           
   
 )
@@ -303,13 +301,10 @@ server <- function(input, output) {
     
     labels <- sample(df_vda$country, 30)
     
-    ggplot(data = df_vda, aes(x=log(x), y=log(y), color = region, shape = x)) +
+    ggplot(data = df_vda, aes(x=log(x), y=log(y), color = region)) +
       geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
       xlab("") + ylab("") + 
       scale_colour_discrete(name = "region", 
-                            breaks = levels(df_vda$region),
-                            labels = levels(df_vda$region)) +
-      scale_shape_continuous(name  = "region", 
                             breaks = levels(df_vda$region),
                             labels = levels(df_vda$region)) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
@@ -322,12 +317,6 @@ server <- function(input, output) {
   })
   
 }
-scale_colour_discrete(name  ="Payer",
-                      breaks=c("Female", "Male"),
-                      labels=c("Woman", "Man")) +
-  scale_shape_discrete(name  ="Payer",
-                       breaks=c("Female", "Male"),
-                       labels=c("Woman", "Man"))
 
 # Run the application 
 shinyApp(ui = ui, server = server)
