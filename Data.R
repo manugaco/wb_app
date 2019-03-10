@@ -84,3 +84,7 @@ for(i in 1:length(indicators_code)){
 
 names(list) <- indicators_name
 
+#loading countries names
+countries_ls <- wbcountries(lang = 'en')
+countries <- countries_ls$country[!is.na(countries_ls$regionID)]
+

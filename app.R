@@ -124,11 +124,6 @@ server <- function(input, output) {
     
     var_ts <- list[[input$variable_ts]]
     
-    #List of countries from wbstats package (in order to have a reference list of countries to match maps and source[var])
-    countries_ls <- wbcountries(lang = 'en')
-    #Removing NAs
-    countries <- countries_ls$country[!is.na(countries_ls$regionID)]
-    
     #Selecting those countries that are available in the dataset
     var_ts = var_ts[which(var_ts$country %nin% setdiff(var_ts$country, countries)), ]
     
@@ -191,10 +186,6 @@ server <- function(input, output) {
     yr_mp <- input$year_mp
     
     var_mp <- list[[input$variable_mp]]
-    
-    countries_ls <- wbcountries(lang = 'en')
-    #Removing NAs
-    countries <- countries_ls$country[!is.na(countries_ls$regionID)]
     
     #Selecting those countries that are available in the dataset
     var_mp = var_mp[which(var_mp$country %nin% setdiff(var_mp$country, countries)), ]
@@ -286,10 +277,8 @@ server <- function(input, output) {
     
     yr_vda <- input$year_vda
     
-    #Merging the dataset in one
-    
-    countries_ls <- wbcountries(lang = 'en')
-    countries <- countries_ls$country[!is.na(countries_ls$regionID)]
+    #Merging the data in one dataset
+
     var1 <- var1[which(var1$country %nin% setdiff(var1$country, countries)), ]
     var1 <- var1 %>% select(country, income, region, which(colnames(var1) == yr_vda))
     var2 <- var2[which(var2$country %nin% setdiff(var2$country, countries)), ]
@@ -301,10 +290,10 @@ server <- function(input, output) {
     
     labels <- sample(df_vda$country, 30)
     
-    ggplot(data = df_vda, aes(x=log(x), y=log(y), color = region)) +
+    ggplot(data = df_vda, aes(x=log(x), y=log(y), color = income)) +
       geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
       xlab("") + ylab("") + 
-      scale_colour_discrete(name = "region", 
+      scale_colour_discrete(name = "income", 
                             breaks = levels(df_vda$region),
                             labels = levels(df_vda$region)) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')

@@ -10,9 +10,7 @@ yr <- year[55]
 
 var <- list[[vs]]
 
-countries_ls <- wbcountries(lang = 'en')
-#Removing NAs
-countries <- countries_ls$country[!is.na(countries_ls$regionID)]
+
 
 #Removing aggregates
 var = var[which(var$country %nin% setdiff(var$country, countries)), ]

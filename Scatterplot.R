@@ -15,8 +15,6 @@ yr <- years[50]
 
 #Merging the dataset in one
 
-countries_ls <- wbcountries(lang = 'en')
-countries <- countries_ls$country[!is.na(countries_ls$regionID)]
 var1 <- var1[which(var1$country %nin% setdiff(var1$country, countries)), ]
 var1 <- var1 %>% select(country, income, region, which(colnames(var1) == yr))
 var2 <- var2[which(var2$country %nin% setdiff(var2$country, countries)), ]

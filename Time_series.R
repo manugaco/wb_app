@@ -9,11 +9,6 @@ var <- list[[vs]]
 count <- seq(1, 217, by = 1)
 cnt <- count[sample(1:217, 1)]
 
-#List of countries from wbstats package (in order to have a reference list of countries to match maps and source[var])
-countries_ls <- wbcountries(lang = 'en')
-#Removing NAs
-countries <- countries_ls$country[!is.na(countries_ls$regionID)]
-
 #Selecting those countries that are available in the dataset
 var = var[which(var$country %nin% setdiff(var$country, countries)), ]
 
