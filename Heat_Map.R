@@ -71,6 +71,7 @@ if(vs == indicators_name[4]){
 #Plotting the variablae in the map
 
 fill <- df[, (names(df) %in% yr)]
+
 colors <- c("magma", "plasma", "inferno", "viridis", "cividis")
 
 ggplot() +

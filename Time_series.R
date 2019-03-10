@@ -47,11 +47,11 @@ for(i in 1:length(bad)){
 
 df <- left_join(map, var, by = c('region' = 'country'))
 df <- df[!duplicated(df$region), ]
-df$region
+
 #Selecting the country and formating the input of the plot
 
 rownames(df) <- seq(1, nrow(df), by = 1)
-df2 <- df[which(rownames(df) == cnt),]
+df2 <- df[which(rownames(df$region) == cnt),]
 ts <- t(df2[,-(1:14)])
 ts <- cbind(rownames(ts), ts[,1])
 colnames(ts) <- c("year", "region")
