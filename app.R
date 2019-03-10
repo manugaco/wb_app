@@ -85,7 +85,9 @@ ui <- fluidPage(
                            
                            navbarMenu(title="INFO",icon=icon("far fa-info"),
                                       tabPanel(title="PARTICIPANTS",icon=icon("fas fa-user")),
-                                      tabPanel(title="DATASET",icon=icon("fas fa-database")))
+                                      tabPanel(title="DATASET",icon=icon("fas fa-database"))),
+                           
+                           tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"))
                           
   
 )
