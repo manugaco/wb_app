@@ -2,7 +2,7 @@
 
 
 #This is the variable selection
-vs <- indicators_name[1]
+vs <- indicators_name[10]
 
 #This is the year selected
 year <- seq(1960, 2018, by = 1)
@@ -60,15 +60,33 @@ if(vs == indicators_name[4]){
 #Plotting the variablae in the map
 
 fill <- df[, (names(df) %in% yr)]
-mid = mean(na.omit(fill))
-colors <- c("blue", "red", "orange", "green")
 
 ggplot() +
-  geom_map(data = map, map = map,
-           aes(x = long, y = lat, group = group, map_id = region),
-           fill = "white", colour = "black", size=0.5) +
+ geom_map(data = map, map = map,
+         aes(x = long, y = lat, group = group, map_id = region),
+        fill="white", colour="black", size=0.5) +
   geom_map(data = df, map = map, aes(fill = fill, map_id = region),
-           colour="black", size = 0.5) +
-  scale_color_gradientn(colours = rainbow(5)) +
-  theme_map() +
-  ggtitle(vs) + labs(fill=vs)
+           colour="black", size = 0.5) + labs(fill="") + ggtitle(vs) +
+  scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','red4')
+                       ,values = scales::rescale(c(100,96581,822675,3190373,10000000))
+  ) +
+  theme(text = element_text(family = 'Gill Sans', color = 'white')
+        ,plot.title = element_text(size = 20)
+        ,plot.subtitle = element_text(size = 14)
+        ,axis.ticks = element_blank()
+        ,axis.text = element_blank()
+        ,panel.grid = element_blank()
+        ,panel.background = element_rect(fill = 'grey30')
+        ,plot.background = element_rect(fill = 'grey30')
+        ,legend.position = c(.18,.36)
+        ,legend.background = element_blank()
+        ,legend.key = element_blank()
+  ) +
+  annotate(geom = 'text'
+           ,label = 'Source : World Bank Data'
+           ,x = 18, y = -55
+           ,size = 3
+           ,family = 'Gill Sans'
+           ,color = 'white'
+           ,hjust = 'left'
+  )

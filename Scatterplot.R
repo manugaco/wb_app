@@ -19,19 +19,22 @@ countries_ls <- wbcountries(lang = 'en')
 countries <- countries_ls$country[!is.na(countries_ls$regionID)]
 var1 <- var1[which(var1$country %nin% setdiff(var1$country, countries)), ]
 var1 <- var1 %>% select(country, income, region, which(colnames(var1) == yr))
-
-countries_ls <- wbcountries(lang = 'en')
-countries <- countries_ls$country[!is.na(countries_ls$regionID)]
 var2 <- var2[which(var2$country %nin% setdiff(var2$country, countries)), ]
 var2 <- var2 %>% select(country, income, region, which(colnames(var2) == yr))
 
-df <- merge(var1, var2, by = "country")
-df <- df[, -(5:6)]
-colnames(df) <- c("country","income","region", "x", "y")
+df_vda <- merge(var1, var2, by = "country")
+df_vda <- df_vda[, -(5:6)]
+colnames(df_vda) <- c("country","income","region", "x", "y")
 
-paste(v1, v2, sep = " vs ")
 
-ggplot(data = df, aes(x=x, y=y, color=region, size= x)) +
-  geom_point() +
-  ggtitle(paste(v2, v1, sep = " vs "))
+ggplot(data = df_vda, aes(x=log(x), y=log(y), color = region)) +
+  geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = 'white') +
+  ggtitle(paste(v2, v1, sep = " vs ")) +
+  theme(text = element_text(family = 'Gill Sans', color = 'white')
+        ,plot.title = element_text(size = 20)
+        ,panel.background = element_rect(fill = 'grey30')
+        ,plot.background = element_rect(fill = 'grey30')
+        ,legend.background = element_blank()
+        ,legend.key = element_blank()
+  )
 
