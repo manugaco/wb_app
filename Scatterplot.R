@@ -27,14 +27,20 @@ df_vda <- df_vda[, -(5:6)]
 colnames(df_vda) <- c("country","income","region", "x", "y")
 
 
-ggplot(data = df_vda, aes(x=log(x), y=log(y), color = region)) +
-  geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = 'white') +
-  ggtitle(paste(v2, v1, sep = " vs ")) +
+ggplot(data = df_vda, aes(x=log(x), y=log(y), color = region, size = x)) +
+  geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
+  xlab("") + ylab("") + 
+  scale_colour_discrete(name = "region", 
+                        breaks = levels(df_vda$region),
+                        labels = levels(df_vda$region)) +
+  scale_size_continuous(name  = "region", 
+                        breaks = levels(df_vda$region),
+                        labels = levels(df_vda$region)) +
   theme(text = element_text(family = 'Gill Sans', color = 'white')
         ,plot.title = element_text(size = 20)
         ,panel.background = element_rect(fill = 'grey30')
         ,plot.background = element_rect(fill = 'grey30')
         ,legend.background = element_blank()
-        ,legend.key = element_blank()
+        ,legend.key = element_blank())
   )
-
+levels(df_vda$region)
