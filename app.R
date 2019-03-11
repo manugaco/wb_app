@@ -275,7 +275,7 @@ server <- function(input, output) {
     labels <- sample(df_vda$country, 30)
     
     ggplot(data = df_vda, aes(x=log(x), y=log(y), color = income)) +
-      geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
+      geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "black") +
       xlab(input$variable_2) + ylab(input$variable_1) + 
       scale_colour_discrete(name = "income", 
                             breaks = levels(df_vda$region),
@@ -283,8 +283,12 @@ server <- function(input, output) {
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
+            ,panel.grid = element_blank()
+            ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
-            ,legend.background = element_blank())
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
     
   })
   
