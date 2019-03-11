@@ -91,12 +91,10 @@ ui <- fluidPage(
                                       # Input: Selector for choosing dataset ----
                                       selectInput(inputId = "variable_1",
                                                   label = "Choose variable for y-axis:",
-                                                  choices = names(list),
-                                                  value = names(list[1])),
+                                                  choices = names(list)),
                                       selectInput(inputId = "variable_2",
                                                   label = "Choose variable for x-axis:",
-                                                  choices = names(list),
-                                                  value = names(list[12])),
+                                                  choices = names(list)),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
@@ -250,6 +248,7 @@ server <- function(input, output) {
                ,color = 'white'
                ,hjust = 'left'
       )
+    
   })
   
   output$vda = renderPlot({
