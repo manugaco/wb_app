@@ -91,12 +91,10 @@ ui <- fluidPage(
                                       # Input: Selector for choosing dataset ----
                                       selectInput(inputId = "variable_1",
                                                   label = "Choose variable for y-axis:",
-                                                  choices = names(list),
-                                                  value = names(list[1])),
+                                                  choices = names(list)),
                                       selectInput(inputId = "variable_2",
                                                   label = "Choose variable for x-axis:",
-                                                  choices = names(list),
-                                                  value = names(list[12])),
+                                                  choices = names(list)),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
@@ -285,10 +283,8 @@ server <- function(input, output) {
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
-            ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
-            ,legend.background = element_blank()
-            ,legend.key = element_blank())
+            ,legend.background = element_blank())
     
   })
   
