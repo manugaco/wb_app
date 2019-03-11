@@ -29,7 +29,7 @@ library(ggthemes)
 library(viridisLite)
 library(viridis)
 
-#source("Data.R")
+# source("Data.R")
 
 # Image URL 
 
@@ -62,7 +62,7 @@ ui <- fluidPage(
                                     
                            
                            tabPanel(title="WORLD HEAT MAP",icon=icon("far fa-globe"),
-                                    titlePanel("World Heat Map"),
+                                      titlePanel("FUCK MANU"),
                                     
                                     sidebarPanel(
                                       
@@ -166,7 +166,7 @@ server <- function(input, output) {
    
     
     #This is the year selected
-    
+    vs = input$variable_mp
     yr_mp <- input$year_mp
     
     var_mp <- list[[input$variable_mp]]
@@ -186,7 +186,7 @@ server <- function(input, output) {
     #Extracting the countries list from world map package
     map_mp <- map_data('world')
     #map <- map[!duplicated(map$region), ]
-    map_mp <- fortify(map)
+    map_mp <- fortify(map_mp)
     
     #There are some country names that does not match, some tidy is necessary
     
@@ -205,25 +205,16 @@ server <- function(input, output) {
     df_mp <- left_join(map_mp, var_mp, by = c('region' = 'country'))
     df_mp <- df_mp[!duplicated(df_mp$region), ]
     
-    #Removing extreme values
-    
-    if(vs == indicators_name[1]){
-      df_mp <- df_mp[-(which(df_mp[,"yr_mp"] > 70000)),]
-    }
-    
-    if(vs == indicators_name[4]){
-      df_mp <- df_mp[-(which(df_mp[, (names(df_mp) %in% yr_mp)] > 200)),]
-    }
     
     #Plotting the variablae in the map
     
     fill_mp <- df_mp[, (names(df_mp) %in% yr_mp)]
     
     ggplot() +
-      geom_map(data = map, map = map,
+      geom_map(data = map_mp, map = map_mp,
                aes(x = long, y = lat, group = group, map_id = region),
                fill="white", colour="black", size=0.5) +
-      geom_map(data = df_mp, map = map, aes(fill = fill_mp, map_id = region),
+      geom_map(data = df_mp, map = map_mp, aes(fill = fill_mp, map_id = region),
                colour="black", size = 0.5) + labs(fill="") + ggtitle(input$variable_mp) +
       scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','red4')
                            ,values = scales::rescale(c(100,96581,822675,3190373,10000000))
