@@ -10,8 +10,6 @@ yr <- year[55]
 
 var <- list[[vs]]
 
-
-
 #Removing aggregates
 var = var[which(var$country %nin% setdiff(var$country, countries)), ]
 
