@@ -28,6 +28,7 @@ library(mapdata)
 library(ggthemes)
 library(viridisLite)
 library(viridis)
+library(gridExtra)
 
 #source("Data.R")
 
@@ -83,8 +84,8 @@ ui <- fluidPage(
   ,
                                     
                         
-                           tabPanel(title="VISUAL DATA ANALYSIS",icon=icon("bar-chart-o"),
-                           titlePanel("Visual Data Analysis"),
+                           tabPanel(title="BIVARIATE DATA VISUALIZATION",icon=icon("bar-chart-o"),
+                           titlePanel("Bivariate Data Visualization"),
                                     
                            sidebarPanel(
                                       
@@ -99,19 +100,34 @@ ui <- fluidPage(
                                                   label = "Select Year:",
                                                   min = 1960,
                                                   max = 2018,
-                                                  value = 1990)
-                                                  
-                                      ),
+                                                  value = 1990)),
                                     
                                     mainPanel(plotOutput("vda")))
   ,
-                           
+                         
+                          tabPanel(title="UNIVARIATE DATA VISUALIZATION",icon=icon("bar-chart-o"),
+                          titlePanel("Univariate Data Visualization"),
+           
+                          sidebarPanel(
+             
+                                     # Input: Selector for choosing dataset ----
+                                     selectInput(inputId = "variable_uda",
+                                                 label = "Choose variable:",
+                                                 choices = names(list)),
+                                     sliderInput(inputId = "year_uda",
+                                                 label = "Select Year:",
+                                                 min = 1960,
+                                                 max = 2018,
+                                                 value = 1990)),
+           
+                                    mainPanel(plotOutput("uda")))
+  ,
                            navbarMenu(title="INFO",icon=icon("far fa-info"),
                                       tabPanel(title="PARTICIPANTS",icon=icon("fas fa-user")),
                                       
                                       tabPanel(title="DATASET",icon=icon("fas fa-database"))),
                            
-                                      tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"))
+                          tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"))
                           
   
 ))
@@ -279,6 +295,68 @@ server <- function(input, output) {
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
+    
+  })
+  
+  output$uda = renderPlot({
+    
+    #Variables
+    
+    var_uda <- list[[input$variable_uda]]
+    
+    #Years
+    
+    yr_vda <- input$year_uda
+    
+    #Merging the data in one dataset
+    
+    var_uda <- var_uda[which(var_uda$country %nin% setdiff(var_uda$country, countries)), ]
+    df_uda <- var_uda %>% select(country, income, region, which(colnames(var_uda) == yr_vda))
+
+    df_uda <- df_uda[, -(5:6)]
+    colnames(df_uda) <- c("country","income","region", "var")
+    
+    p1 <- ggplot(data = df_uda, aes(log(var), fill = income)) +
+      geom_histogram(color = 'black') + ylab("") +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,panel.grid = element_blank()
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
+    
+    p2 <- ggplot(data = df_uda, aes(x = income, y = log(var), fill = income)) +
+      geom_boxplot(outlier.colour = 'white', color = 'black' ) +
+      coord_flip() + ylab("") +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,legend.position= "none"
+            ,axis.text.y = element_blank()
+            ,panel.grid = element_blank()
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
+    
+    p3 <- ggplot(data = df_uda, aes(log(var), fill = income)) +
+      geom_density(color = 'black', alpha = 0.3) + ylab("") +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,panel.grid = element_blank()
+            ,legend.position= "none"
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
+    
+    gridExtra::grid.arrange(p1, p2, p3)
     
   })
   
