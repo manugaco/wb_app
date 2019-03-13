@@ -119,8 +119,15 @@ ui <- fluidPage(
                                                  min = 1960,
                                                  max = 2018,
                                                  value = 1990),
-                                  
-                                     checkboxInput("log", "Log Transform", value = TRUE)),
+                                     h6(" Select log transformation:"),
+                                     checkboxInput("log","Log Transform", value = TRUE),
+                                     checkboxGroupInput("incomegroup", 
+                                                        h6("Select the income group:"), 
+                                                        choices = list("High income" = 1, 
+                                                                       "Low income" = 2, 
+                                                                       "Lower middle income" = 3,
+                                                                       "Upper middle income "=4),
+                                                        selected = 1)),
            
                                     mainPanel(plotOutput("uda")))
   ,
