@@ -30,7 +30,9 @@ library(viridisLite)
 library(viridis)
 library(gridExtra)
 
-#source("Data.R")
+if(!exists("countries")){
+  source("Data.R")
+}
 
 # Image URL 
 
@@ -124,7 +126,8 @@ ui <- fluidPage(
                                                  selected = "GDP per capita (current US$)"),
                                      selectInput(inputId = "group_uda",
                                                  label = "Group by:",
-                                                 choices = c("Income", "Region")),
+                                                 choices = c("Income", "Region", "None"),
+                                                 selected = "None"),
                                      selectInput(inputId = "plotype",
                                                  label = "Select plot type:",
                                                  choices = c("Boxplot", "Histogram", "Density"), 
@@ -361,6 +364,47 @@ server <- function(input, output) {
     if(input$log_uda){
       df_uda$var = log(df_uda$var)
     }
+    p1 <- ggplot(data = df_uda, aes(var)) +
+      geom_histogram(color = 'black', fill = "skyblue") +
+      ylab(input$variable_uda) + xlab("Counts") +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,legend.position= "bottom"
+            ,panel.grid = element_blank()
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
+    
+    p2 <- ggplot(data = df_uda, aes(y = var)) +
+      geom_boxplot(outlier.colour = 'white', color = 'black', fill = "skyblue") +
+      ylab(input$variable_uda) +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,legend.position= "bottom"
+            ,panel.grid = element_blank()
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
+    
+    p3 <- ggplot(data = df_uda, aes(var)) +
+      geom_density(color = 'black', alpha = 0.3, fill = "skyblue") +
+      ylab(input$variable_uda) + xlab("Density") +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,panel.grid = element_blank()
+            ,legend.position= "bottom"
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
     
     p1_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_histogram(color = 'black') +
@@ -460,6 +504,13 @@ server <- function(input, output) {
           p2_reg
         }else{
           p3_reg
+        }} else{
+          if(input$plotype == "Histogram"){
+            p1
+          }else if(input$plotype == "Boxplot"){
+            p2
+          }else{
+            p3
     }}
     
   })
