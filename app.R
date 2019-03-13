@@ -95,12 +95,15 @@ ui <- fluidPage(
                                                   choices = names(list)),
                                       selectInput(inputId = "variable_2",
                                                   label = "Choose variable for x-axis:",
-                                                  choices = names(list)),
+                                                  choices = names(list),
+                                                  value = names(list)[12]),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
                                                   max = 2018,
-                                                  value = 1990)),
+                                                  value = 1990),
+                                      h6("Select log transformation:"),
+                                      checkboxInput("log","Log scale", value = TRUE)),
                                     
                                     mainPanel(plotOutput("vda")))
   ,
@@ -119,15 +122,8 @@ ui <- fluidPage(
                                                  min = 1960,
                                                  max = 2018,
                                                  value = 1990),
-                                     h6(" Select log transformation:"),
-                                     checkboxInput("log","Log Transform", value = TRUE),
-                                     checkboxGroupInput("incomegroup", 
-                                                        h6("Select the income group:"), 
-                                                        choices = list("High income" = 1, 
-                                                                       "Low income" = 2, 
-                                                                       "Lower middle income" = 3,
-                                                                       "Upper middle income "=4),
-                                                        selected = 1)),
+                                     h6("Select log transformation:"),
+                                     checkboxInput("log_uda","Log scale", value = TRUE)),
            
                                     mainPanel(plotOutput("uda")))
   ,
@@ -287,9 +283,12 @@ server <- function(input, output) {
     df_vda <- df_vda[, -(5:6)]
     colnames(df_vda) <- c("country","income","region", "x", "y")
     
-    labels <- sample(df_vda$country, 30)
+    if(input$log){
+      df_vda$x = log(df_vda$x)
+      df_vda$y = log(df_vda$y)
+    }
     
-    ggplot(data = df_vda, aes(x=log(x), y=log(y), color = income)) +
+    ggplot(data = df_vda, aes(x=x, y=y, color = income)) +
       geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "black") +
       xlab(input$variable_2) + ylab(input$variable_1) + 
       scale_colour_discrete(name = "income", 
@@ -307,8 +306,6 @@ server <- function(input, output) {
     
   })
   
-  
-  
   output$uda = renderPlot({
     
     #Variables
@@ -317,17 +314,17 @@ server <- function(input, output) {
     
     #Years
     
-    yr_vda <- input$year_uda
+    yr_uda <- input$year_uda
     
     #Merging the data in one dataset
     
     var_uda <- var_uda[which(var_uda$country %nin% setdiff(var_uda$country, countries)), ]
-    df_uda <- var_uda %>% select(country, income, region, which(colnames(var_uda) == yr_vda))
+    df_uda <- var_uda %>% select(country, income, region, which(colnames(var_uda) == yr_uda))
 
     df_uda <- df_uda[, -(5:6)]
     colnames(df_uda) <- c("country","income","region", "var")
     
-    if(input$log){
+    if(input$log_uda){
       df_uda$var = log(df_uda$var)
     }
     
