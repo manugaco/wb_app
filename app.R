@@ -37,7 +37,8 @@ library(gridExtra)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   
-  theme = shinytheme("superhero"),
+                theme = shinytheme("superhero"),
+
                 
                 navbarPage(title="WORLD BANK DATA",
                            tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
