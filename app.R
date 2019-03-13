@@ -121,7 +121,14 @@ ui <- fluidPage(
                                      # Input: Selector for choosing dataset ----
                                      selectInput(inputId = "variable_uda",
                                                  label = "Choose variable:",
-                                                 choices = names(list)),
+                                                 choices = names(list),
+                                                 selected = names(list[1])),
+                                     selectInput(inputId = "group_uda",
+                                                 label = "Group by:",
+                                                 choices = c("Income", "Region")),
+                                     selectInput(inputId = "plotype",
+                                                 label = "Select plot type:",
+                                                 choices = c("Boxplot", "Histogram", "Density")),
                                      sliderInput(inputId = "year_uda",
                                                  label = "Select Year:",
                                                  min = 1960,
@@ -298,7 +305,7 @@ server <- function(input, output) {
     
     if(input$loess){
       ggplot(data = df_vda, aes(x=x, y=y)) +
-      geom_point(aes(color = income)) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
+      geom_point(aes(color = income), size = 2) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
       geom_smooth(method = "lm", se = FALSE, colour="skyblue") +
       xlab(input$variable_2) + ylab(input$variable_1) + 
       scale_colour_discrete(name = "income", 
@@ -315,7 +322,7 @@ server <- function(input, output) {
             ,legend.key = element_blank())
     }else{
       ggplot(data = df_vda, aes(x=x, y=y)) +
-        geom_point(aes(color = income)) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
+        geom_point(aes(color = income), size = 2) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
         xlab(input$variable_2) + ylab(input$variable_1) + 
         scale_colour_discrete(name = "income", 
                               breaks = levels(df_vda$region),
@@ -350,17 +357,18 @@ server <- function(input, output) {
 
     df_uda <- df_uda[, -(5:6)]
     colnames(df_uda) <- c("country","income","region", "var")
-    
+
     if(input$log_uda){
       df_uda$var = log(df_uda$var)
     }
     
-    
-    p1 <- ggplot(data = df_uda, aes(var, fill = income)) +
-      geom_histogram(color = 'black') + ylab("") +
+    p1_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
+      geom_histogram(color = 'black') +
+      ylab(input$variable_uda) + xlab("Counts") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
+            ,legend.position= "bottom"
             ,panel.grid = element_blank()
             ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
@@ -368,13 +376,13 @@ server <- function(input, output) {
             ,legend.background = element_blank()
             ,legend.key = element_blank())
     
-    p2 <- ggplot(data = df_uda, aes(x = income, y = var, fill = income)) +
+    p2_inc <- ggplot(data = df_uda, aes(x = income, y = var, fill = income)) +
       geom_boxplot(outlier.colour = 'white', color = 'black' ) +
-      coord_flip() + ylab("") +
+      ylab(input$variable_uda) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
-            ,legend.position= "none"
+            ,legend.position= "bottom"
             ,axis.text.y = element_blank()
             ,panel.grid = element_blank()
             ,panel.background = element_rect(fill = 'grey30')
@@ -383,20 +391,78 @@ server <- function(input, output) {
             ,legend.background = element_blank()
             ,legend.key = element_blank())
     
-    p3 <- ggplot(data = df_uda, aes(var, fill = income)) +
-      geom_density(color = 'black', alpha = 0.3) + ylab("") +
+    p3_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
+      geom_density(color = 'black', alpha = 0.3) +
+      ylab(input$variable_uda) + xlab("Density") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
             ,panel.grid = element_blank()
-            ,legend.position= "none"
+            ,legend.position= "bottom"
             ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
     
-    gridExtra::grid.arrange(p1, p2, p3)
+    p1_reg <- ggplot(data = df_uda, aes(var, fill = region)) +
+      geom_histogram(color = 'black') +
+      ylab(input$variable_uda) + xlab("Counts") +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,legend.position= "bottom"
+            ,panel.grid = element_blank()
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
+    
+    p2_reg <- ggplot(data = df_uda, aes(x = region, y = var, fill = region)) +
+      geom_boxplot(outlier.colour = 'white', color = 'black' ) +
+      ylab(input$variable_uda) +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,legend.position= "bottom"
+            ,axis.text.y = element_blank()
+            ,panel.grid = element_blank()
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
+    
+    p3_reg <- ggplot(data = df_uda, aes(var, fill = region)) +
+      geom_density(color = 'black', alpha = 0.3) +
+      ylab(input$variable_uda) + xlab("Density") +
+      theme(text = element_text(family = 'Gill Sans', color = 'white')
+            ,plot.title = element_text(size = 20)
+            ,axis.text = element_text(color = 'white')
+            ,panel.grid = element_blank()
+            ,legend.position= "bottom"
+            ,panel.background = element_rect(fill = 'grey30')
+            ,plot.background = element_rect(fill = 'grey30')
+            ,axis.line = element_line(color = 'white')
+            ,legend.background = element_blank()
+            ,legend.key = element_blank())
+    
+    if(input$group_uda == "Income"){
+      if(input$plotype == "Histogram"){
+      p1_inc
+        }else if(input$plotype == "Boxplot"){
+      p2_inc
+        }else{
+      p3_inc
+        }}else if(input$group_uda == "Region"){
+      if(input$plotype == "Histogram"){
+          p1_reg
+        }else if(input$plotype == "Boxplot"){
+          p2_reg
+        }else{
+          p3_reg
+    }}
     
   })
   
