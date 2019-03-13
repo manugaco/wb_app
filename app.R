@@ -30,9 +30,6 @@ library(viridisLite)
 library(viridis)
 library(gridExtra)
 
-countries_ls <- wbcountries(lang = 'en')
-countries <- countries_ls$country[!is.na(countries_ls$regionID)]
-
 #source("Data.R")
 
 # Image URL 
@@ -57,8 +54,7 @@ ui <- fluidPage(
                                       selectInput(inputId = "country_ts",
                                                   label = "Choose country:",
                                                   choices = countries,
-                                                  selected = "Spain"
-                                                   )
+                                                  selected = "Spain")
                                     ),
 
                                     mainPanel(plotlyOutput("tm")))
@@ -97,11 +93,11 @@ ui <- fluidPage(
                                       selectInput(inputId = "variable_1",
                                                   label = "Choose variable for y-axis:",
                                                   choices = names(list),
-                                                  selected = names(list[12])),
+                                                  selected = "Life expectancy at birth, total (years)"),
                                       selectInput(inputId = "variable_2",
                                                   label = "Choose variable for x-axis:",
                                                   choices = names(list),
-                                                  selected = names(list[1])),
+                                                  selected = "GDP per capita (current US$)"),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
@@ -125,13 +121,14 @@ ui <- fluidPage(
                                      selectInput(inputId = "variable_uda",
                                                  label = "Choose variable:",
                                                  choices = names(list),
-                                                 selected = names(list[1])),
+                                                 selected = "GDP per capita (current US$)"),
                                      selectInput(inputId = "group_uda",
                                                  label = "Group by:",
                                                  choices = c("Income", "Region")),
                                      selectInput(inputId = "plotype",
                                                  label = "Select plot type:",
-                                                 choices = c("Boxplot", "Histogram", "Density")),
+                                                 choices = c("Boxplot", "Histogram", "Density"), 
+                                                 selected = "Density"),
                                      sliderInput(inputId = "year_uda",
                                                  label = "Select Year:",
                                                  min = 1960,
