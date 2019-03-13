@@ -47,12 +47,12 @@ ui <- fluidPage(
                                       
                                       # Input: Selector for choosing dataset ----
                                       selectInput(inputId = "variable_ts",
-                                                  label = "Choose a variable:",
+                                                  label = "Choose variable:",
                                                   choices = names(list)),
                                       
                                       # Input: Numeric entry for number of obs to view ----
                                       selectInput(inputId = "country_ts",
-                                                   label = "Choose the country:",
+                                                   label = "Choose country:",
                                                   choices = countries
                                                    )
                                     ),
@@ -69,7 +69,7 @@ ui <- fluidPage(
                                       
                                       # Input: Selector for choosing dataset ----
                                       selectInput(inputId = "variable_mp",
-                                                  label = "Choose a variable:",
+                                                  label = "Choose variable:",
                                                   choices = names(list)),
                                       sliderInput(inputId = "year_mp",
                                                   label = "Select Year:",
@@ -95,15 +95,17 @@ ui <- fluidPage(
                                                   choices = names(list)),
                                       selectInput(inputId = "variable_2",
                                                   label = "Choose variable for x-axis:",
-                                                  choices = names(list),
-                                                  value = names(list)[12]),
+                                                  choices = names(list)),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
                                                   max = 2018,
                                                   value = 1990),
                                       h6("Select log transformation:"),
-                                      checkboxInput("log","Log scale", value = TRUE)),
+                                      checkboxInput("log_x","Log scale x-axis", value = TRUE),
+                                      checkboxInput("log_y","Log scale y-axis", value = TRUE),
+                                      h6("Add regression line:"),
+                                      checkboxInput("loess","Regression line", value = TRUE)),
                                     
                                     mainPanel(plotOutput("vda")))
   ,
@@ -283,13 +285,18 @@ server <- function(input, output) {
     df_vda <- df_vda[, -(5:6)]
     colnames(df_vda) <- c("country","income","region", "x", "y")
     
-    if(input$log){
+    if(input$log_x){
       df_vda$x = log(df_vda$x)
+    }
+    
+    if(input$log_y){
       df_vda$y = log(df_vda$y)
     }
     
-    ggplot(data = df_vda, aes(x=x, y=y, color = income)) +
-      geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "black") +
+    if(input$loess){
+      ggplot(data = df_vda, aes(x=x, y=y)) +
+      geom_point(aes(color = income)) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
+      geom_smooth(method = "lm", se = FALSE, colour="black") +
       xlab(input$variable_2) + ylab(input$variable_1) + 
       scale_colour_discrete(name = "income", 
                             breaks = levels(df_vda$region),
@@ -303,6 +310,23 @@ server <- function(input, output) {
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
+    }else{
+      ggplot(data = df_vda, aes(x=x, y=y)) +
+        geom_point(aes(color = income)) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
+        xlab(input$variable_2) + ylab(input$variable_1) + 
+        scale_colour_discrete(name = "income", 
+                              breaks = levels(df_vda$region),
+                              labels = levels(df_vda$region)) +
+        theme(text = element_text(family = 'Gill Sans', color = 'white')
+              ,plot.title = element_text(size = 20)
+              ,axis.text = element_text(color = 'white')
+              ,panel.grid = element_blank()
+              ,panel.background = element_rect(fill = 'grey30')
+              ,plot.background = element_rect(fill = 'grey30')
+              ,axis.line = element_line(color = 'white')
+              ,legend.background = element_blank()
+              ,legend.key = element_blank())
+      }
     
   })
   
