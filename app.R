@@ -383,7 +383,6 @@ server <- function(input, output) {
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
             ,legend.position= "bottom"
-            ,axis.text.y = element_blank()
             ,panel.grid = element_blank()
             ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
@@ -426,7 +425,6 @@ server <- function(input, output) {
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
             ,legend.position= "bottom"
-            ,axis.text.y = element_blank()
             ,panel.grid = element_blank()
             ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
