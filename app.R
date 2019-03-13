@@ -118,7 +118,9 @@ ui <- fluidPage(
                                                  label = "Select Year:",
                                                  min = 1960,
                                                  max = 2018,
-                                                 value = 1990)),
+                                                 value = 1990),
+                                  
+                                     checkboxInput("log", "Log Transform", value = TRUE)),
            
                                     mainPanel(plotOutput("uda")))
   ,
@@ -298,6 +300,8 @@ server <- function(input, output) {
     
   })
   
+  
+  
   output$uda = renderPlot({
     
     #Variables
@@ -316,7 +320,12 @@ server <- function(input, output) {
     df_uda <- df_uda[, -(5:6)]
     colnames(df_uda) <- c("country","income","region", "var")
     
-    p1 <- ggplot(data = df_uda, aes(log(var), fill = income)) +
+    if(input$log){
+      df_uda$var = log(df_uda$var)
+    }
+    
+    
+    p1 <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_histogram(color = 'black') + ylab("") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
@@ -328,7 +337,7 @@ server <- function(input, output) {
             ,legend.background = element_blank()
             ,legend.key = element_blank())
     
-    p2 <- ggplot(data = df_uda, aes(x = income, y = log(var), fill = income)) +
+    p2 <- ggplot(data = df_uda, aes(x = income, y = var, fill = income)) +
       geom_boxplot(outlier.colour = 'white', color = 'black' ) +
       coord_flip() + ylab("") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
@@ -343,7 +352,7 @@ server <- function(input, output) {
             ,legend.background = element_blank()
             ,legend.key = element_blank())
     
-    p3 <- ggplot(data = df_uda, aes(log(var), fill = income)) +
+    p3 <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_density(color = 'black', alpha = 0.3) + ylab("") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
