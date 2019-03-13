@@ -92,15 +92,21 @@ ui <- fluidPage(
                                       # Input: Selector for choosing dataset ----
                                       selectInput(inputId = "variable_1",
                                                   label = "Choose variable for y-axis:",
-                                                  choices = names(list)),
+                                                  choices = names(list),
+                                                  selected=names(list[1])),
+                                          
                                       selectInput(inputId = "variable_2",
                                                   label = "Choose variable for x-axis:",
-                                                  choices = names(list)),
+                                                  choices = names(list),
+                                                  selected=names(list[2])),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
                                                   max = 2018,
-                                                  value = 1990)),
+                                                  value = 1990),
+                                      h6("Include line regression:"),
+                                      checkboxInput("reg","Line regression", value = TRUE)),
+                                    
                                     
                                     mainPanel(plotOutput("vda")))
   ,
@@ -289,6 +295,7 @@ server <- function(input, output) {
     
     labels <- sample(df_vda$country, 30)
     
+    if(input$reg){
     ggplot(data = df_vda, aes(x=log(x), y=log(y), color = income)) +
       geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "black") +
       xlab(input$variable_2) + ylab(input$variable_1) + 
@@ -303,7 +310,24 @@ server <- function(input, output) {
             ,plot.background = element_rect(fill = 'grey30')
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
-            ,legend.key = element_blank())
+            ,legend.key = element_blank())+ stat_smooth(method = "lm", col = "red") }
+    else{
+      ggplot(data = df_vda, aes(x=log(x), y=log(y), color = income)) +
+        geom_point() + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "black") +
+        xlab(input$variable_2) + ylab(input$variable_1) + 
+        scale_colour_discrete(name = "income", 
+                              breaks = levels(df_vda$region),
+                              labels = levels(df_vda$region)) +
+        theme(text = element_text(family = 'Gill Sans', color = 'white')
+              ,plot.title = element_text(size = 20)
+              ,axis.text = element_text(color = 'white')
+              ,panel.grid = element_blank()
+              ,panel.background = element_rect(fill = 'grey30')
+              ,plot.background = element_rect(fill = 'grey30')
+              ,axis.line = element_line(color = 'white')
+              ,legend.background = element_blank()
+              ,legend.key = element_blank())
+    }
     
   })
   
