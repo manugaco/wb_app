@@ -299,7 +299,7 @@ server <- function(input, output) {
     if(input$loess){
       ggplot(data = df_vda, aes(x=x, y=y)) +
       geom_point(aes(color = income)) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
-      geom_smooth(method = "lm", se = FALSE, colour="black") +
+      geom_smooth(method = "lm", se = FALSE, colour="skyblue") +
       xlab(input$variable_2) + ylab(input$variable_1) + 
       scale_colour_discrete(name = "income", 
                             breaks = levels(df_vda$region),
