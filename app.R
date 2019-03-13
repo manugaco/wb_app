@@ -40,7 +40,7 @@ ui <- fluidPage(
                 theme = shinytheme("superhero"),
 
                 
-                navbarPage(title="WORLD BANK DATA",
+                navbarPage(title="WORLD BANK DATA ",
                            tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
                                     titlePanel("Time Series"),
                                     
