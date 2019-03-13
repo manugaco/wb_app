@@ -365,8 +365,8 @@ server <- function(input, output) {
       df_uda$var = log(df_uda$var)
     }
     p1 <- ggplot(data = df_uda, aes(var)) +
-      geom_histogram(color = 'black', fill = "skyblue") +
-      ylab(input$variable_uda) + xlab("Counts") +
+      geom_histogram(color = 'black', fill = "blue") +
+      coord_flip() + ylab(input$variable_uda) + xlab("Counts") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -379,7 +379,7 @@ server <- function(input, output) {
             ,legend.key = element_blank())
     
     p2 <- ggplot(data = df_uda, aes(y = var)) +
-      geom_boxplot(outlier.colour = 'white', color = 'black', fill = "skyblue") +
+      geom_boxplot(outlier.colour = 'white', color = 'black', fill = "blue") +
       ylab(input$variable_uda) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
@@ -393,7 +393,7 @@ server <- function(input, output) {
             ,legend.key = element_blank())
     
     p3 <- ggplot(data = df_uda, aes(var)) +
-      geom_density(color = 'black', alpha = 0.3, fill = "skyblue") +
+      geom_density(color = 'black', alpha = 0.3, fill = "blue") +
       ylab(input$variable_uda) + xlab("Density") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
