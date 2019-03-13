@@ -94,11 +94,11 @@ ui <- fluidPage(
                                       selectInput(inputId = "variable_1",
                                                   label = "Choose variable for y-axis:",
                                                   choices = names(list),
-                                                  selected = names(list[1])),
+                                                  selected = names(list[12])),
                                       selectInput(inputId = "variable_2",
                                                   label = "Choose variable for x-axis:",
                                                   choices = names(list),
-                                                  selected = names(list[12])),
+                                                  selected = names(list[1])),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
@@ -293,7 +293,7 @@ server <- function(input, output) {
     
     df_vda <- merge(var1, var2, by = "country")
     df_vda <- df_vda[, -(5:6)]
-    colnames(df_vda) <- c("country","income","region", "x", "y")
+    colnames(df_vda) <- c("country","income","region", "y", "x")
     
     if(input$log_x){
       df_vda$x = log(df_vda$x)
