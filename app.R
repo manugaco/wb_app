@@ -52,8 +52,9 @@ ui <- fluidPage(
                                       
                                       # Input: Numeric entry for number of obs to view ----
                                       selectInput(inputId = "country_ts",
-                                                   label = "Choose country:",
-                                                  choices = countries
+                                                  label = "Choose country:",
+                                                  choices = countries,
+                                                  selected = "Spain"
                                                    )
                                     ),
 
@@ -92,10 +93,12 @@ ui <- fluidPage(
                                       # Input: Selector for choosing dataset ----
                                       selectInput(inputId = "variable_1",
                                                   label = "Choose variable for y-axis:",
-                                                  choices = names(list)),
+                                                  choices = names(list),
+                                                  selected = names(list[1])),
                                       selectInput(inputId = "variable_2",
                                                   label = "Choose variable for x-axis:",
-                                                  choices = names(list)),
+                                                  choices = names(list),
+                                                  selected = names(list[12])),
                                       sliderInput(inputId = "year_vda",
                                                   label = "Select Year:",
                                                   min = 1960,
