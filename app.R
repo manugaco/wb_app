@@ -30,6 +30,9 @@ library(viridisLite)
 library(viridis)
 library(gridExtra)
 
+countries_ls <- wbcountries(lang = 'en')
+countries <- countries_ls$country[!is.na(countries_ls$regionID)]
+
 #source("Data.R")
 
 # Image URL 
