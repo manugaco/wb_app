@@ -31,20 +31,16 @@ library(viridisLite)
 library(viridis)
 library(gridExtra)
 
-# if(!exists("countries")){
-# source("Data.R")
-#   }
-
 
 # Image wb URL 
-t = tags$a(href= "https://data.worldbank.org" , tags$img(src="wb.png",height=30,width=250))
-tgit = tags$a("GitHub",href="https://github.com/manugaco/Data_Tidying", tags$img(src="github.png",height=15,width=20))
-
+t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
+tgit <- tags$a("GitHub",href="https://github.com/manugaco/Data_Tidying", tags$img(src="github.png",height=20,width=20))
+uni <- tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heigth = 25, width = 25))
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   theme = shinytheme("slate"),
-                navbarPage(title=t,
+                navbarPage(t,
                            tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
                                     titlePanel("Time Series"),
                                     
@@ -150,7 +146,6 @@ ui <- fluidPage(
                            
                           tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs")
                                    ,mainPanel(shinythemes::themeSelector()))
-                          
   
 ))
 
@@ -367,7 +362,7 @@ server <- function(input, output) {
       df_uda$var = log(df_uda$var)
     }
     p1 <- ggplot(data = df_uda, aes(var)) +
-      geom_histogram(color = 'black', fill = "green3") + ylab(input$variable_uda) + xlab("Counts") +
+      geom_histogram(color = 'black', fill = "green3") + xlab(input$variable_uda) + ylab("Counts") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -381,7 +376,7 @@ server <- function(input, output) {
     
     p2 <- ggplot(data = df_uda, aes(y = var)) +
       geom_boxplot(outlier.colour = 'white', color = 'black', fill = "green3") +
-      ylab(input$variable_uda) + 
+      ylab(input$variable_uda) +
       coord_flip() + 
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
@@ -396,7 +391,7 @@ server <- function(input, output) {
     
     p3 <- ggplot(data = df_uda, aes(var)) +
       geom_density(color = 'black', alpha = 0.3, fill = "green3") +
-      ylab(input$variable_uda) + xlab("Density") +
+      xlab(input$variable_uda) + ylab("Density") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
