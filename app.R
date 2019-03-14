@@ -30,18 +30,19 @@ library(viridisLite)
 library(viridis)
 library(gridExtra)
 
-if(!exists("countries")){
-  source("Data.R")
-}
+#if(!exists("countries")){
+#  source("Data.R")}
 
-# Image URL 
+
+# Image wb URL 
+t = tags$a(href= "https://data.worldbank.org" , tags$img(src="wb.png",height=30,width=250))
+tgit = tags$a("GitHub   ",href="https://github.com/manugaco/Data_Tidying", tags$img(src="   github.png",height=15,width=20))
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  
-  theme = shinytheme("superhero"),
-                
-                navbarPage(title="WORLD BANK DATA",
+  theme = shinytheme("slate"),
+                navbarPage(title=t,
                            tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
                                     titlePanel("Time Series"),
                                     
@@ -143,11 +144,10 @@ ui <- fluidPage(
                                     mainPanel(plotOutput("uda")))
   ,
                            navbarMenu(title="INFO",icon=icon("far fa-info"),
-                                      tabPanel(title="PARTICIPANTS",icon=icon("fas fa-user")),
-                                      
-                                      tabPanel(title="DATASET",icon=icon("fas fa-database"))),
+                              tabPanel(tgit)),
                            
-                          tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"))
+                          tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"),
+                                   mainPanel(shinythemes::themeSelector()))
                           
   
 ))
@@ -521,7 +521,7 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 
 #Uploading application
-#rsconnect::setAccountInfo(name='manugaco',
-#                          token='7B67C1050D3D1BA3206C78B5F9DEC18F',
-#                          secret='A+LV652hIeKPi/BrNaI9hk0CQ/L2NDL+q0GE6jl9')
+#rsconnect::setAccountInfo(name='antonio-polo',
+#                          token='F944B6A945AC651D698018E6765BDFF8',
+#                          secret='15mDXcJOVNgYXHg/gt8KhoqOENDX49+h1mRpBW92')
 #rsconnect::deployApp()
