@@ -10,6 +10,7 @@
 # Different modules of our application
 
 library(shiny)
+library(rsconnect)
 library(shinythemes)
 library(shinydashboard)
 library(markdown)
@@ -30,13 +31,14 @@ library(viridisLite)
 library(viridis)
 library(gridExtra)
 
-#if(!exists("countries")){
-#  source("Data.R")}
+# if(!exists("countries")){
+# source("Data.R")
+#   }
 
 
 # Image wb URL 
 t = tags$a(href= "https://data.worldbank.org" , tags$img(src="wb.png",height=30,width=250))
-tgit = tags$a("GitHub   ",href="https://github.com/manugaco/Data_Tidying", tags$img(src="   github.png",height=15,width=20))
+tgit = tags$a("GitHub",href="https://github.com/manugaco/Data_Tidying", tags$img(src="github.png",height=15,width=20))
 
 
 # Define UI for application that draws a histogram
@@ -146,8 +148,8 @@ ui <- fluidPage(
                            navbarMenu(title="INFO",icon=icon("far fa-info"),
                               tabPanel(tgit)),
                            
-                          tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs"),
-                                   mainPanel(shinythemes::themeSelector()))
+                          tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs")
+                                   ,mainPanel(shinythemes::themeSelector()))
                           
   
 ))
@@ -520,8 +522,8 @@ server <- function(input, output) {
 # Run the application 
 shinyApp(ui = ui, server = server)
 
-#Uploading application
-#rsconnect::setAccountInfo(name='antonio-polo',
-#                          token='F944B6A945AC651D698018E6765BDFF8',
-#                          secret='15mDXcJOVNgYXHg/gt8KhoqOENDX49+h1mRpBW92')
-#rsconnect::deployApp()
+# Uploading application
+# rsconnect::setAccountInfo(name='antonio-polo',
+#                          token='C596C71EF6D6C63B1417DCFB40F17924',
+#                          secret='bBHmQ2KRZJWTHwtVV7bWBLXScUbNwmZbYEk2QXVV')
+# rsconnect::deployApp()
