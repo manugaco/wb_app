@@ -31,6 +31,8 @@ library(viridisLite)
 library(viridis)
 library(gridExtra)
 
+#Access to data, it is marked to upload it to shiny server, if run the app in local, unmark
+#source(Data.R)
 
 # Image wb URL 
 t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
@@ -313,12 +315,13 @@ server <- function(input, output) {
     
     if(input$loess){
       ggplot(data = df_vda, aes(x=x, y=y)) +
-      geom_point(aes(color = income), size = 2) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
+      geom_point(aes(color = income), size = 2, show.legend = TRUE) + 
+      geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
       geom_smooth(method = "lm", se = FALSE, colour="skyblue") +
       xlab(input$variable_2) + ylab(input$variable_1) + 
-      scale_colour_discrete(name = "income", 
-                            breaks = levels(df_vda$region),
-                            labels = levels(df_vda$region)) +
+      scale_colour_discrete(name = "Income Group", 
+                            breaks = levels(df_vda$income),
+                            labels = levels(df_vda$income)) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,legend.position = "bottom"
@@ -331,11 +334,12 @@ server <- function(input, output) {
             ,legend.key = element_blank())
     }else{
       ggplot(data = df_vda, aes(x=x, y=y)) +
-        geom_point(aes(color = income), size = 2) + geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
+        geom_point(aes(color = income), size = 2, show.legend = TRUE) + 
+        geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
         xlab(input$variable_2) + ylab(input$variable_1) + 
-        scale_colour_discrete(name = "income", 
-                              breaks = levels(df_vda$region),
-                              labels = levels(df_vda$region)) +
+        scale_colour_discrete(name = "Income Group", 
+                              breaks = levels(df_vda$income),
+                              labels = levels(df_vda$income)) +
         theme(text = element_text(family = 'Gill Sans', color = 'white')
               ,plot.title = element_text(size = 20)
               ,legend.position = "bottom"
