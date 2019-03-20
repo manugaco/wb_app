@@ -22,7 +22,3 @@ The app will contain the following information:
 This is the link to the App:
 
 https://manugaco.shinyapps.io/project/
-
-This is the first sketch/design of the app:
-
-![text](https://github.com/manugaco/Data_Tidying/blob/master/panel%20data.png)
