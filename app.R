@@ -188,11 +188,7 @@ server <- function(input, output) {
     ts <- data.frame(ts, stringsAsFactors = FALSE)
     ts$region <- round(as.numeric(ts[,2]), 3)
     
-<<<<<<< HEAD
-    #Plotting the time series with plotly (dynamic selection of the periods)
-=======
     #Plotting the time series using plotly dynamic chart
->>>>>>> d4bcd4321d2e75d0e2630b1cc350d1d7f00c6f63
     
     plot_ly(ts, x = ~year, y = ~region, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
       layout(title = input$country,
@@ -203,19 +199,15 @@ server <- function(input, output) {
   })
   
   output$mp = renderPlot({
-<<<<<<< HEAD
-    
-    #Year selection
-=======
    
     #This is the year selected
->>>>>>> d4bcd4321d2e75d0e2630b1cc350d1d7f00c6f63
     
     yr_mp <- input$year_mp
     
     var_mp <- list[[input$variable_mp]]
     
     #Selecting those countries that are available in the dataset
+    
     var_mp = var_mp[which(var_mp$country %nin% setdiff(var_mp$country, countries)), ]
     
     #Deleting countries without position information
