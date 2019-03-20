@@ -163,8 +163,8 @@ server <- function(input, output) {
     
     #Selecting those countries that are available in the dataset
     var = var[which(var$country %nin% setdiff(var$country, countries)), ]
-    #Deleting countries without position information
     
+    #Deleting countries without position information
     no_pos <- c("Channel Islands","Eswatini", "Gibraltar", "Hong Kong SAR, China", "Korea, Dem. People’s Rep.",
                 "Macao SAR, China", "Tuvalu", "West Bank and Gaza")
     
@@ -184,21 +184,19 @@ server <- function(input, output) {
     ts <- data.frame(ts, stringsAsFactors = FALSE)
     ts$region <- round(as.numeric(ts[,2]), 3)
     
-    #Plotting the time series
+    #Plotting the time series with plotly (dynamic selection of the periods)
     
     plot_ly(ts, x = ~year, y = ~region, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
       layout(title = input$country,
              yaxis = list(title = input$variable_ts, color = 'white'),
              xaxis = list(title = 'year', tickangle = 45, color = 'white'),
              plot_bgcolor='rgb(150,150,150)', 
-             paper_bgcolor = 'rgb(100,100,100)')
+             paper_bgcolor = 'rgb(100,100,100)') #matching color with the shiny theme (superhero) which is default set.
   })
   
   output$mp = renderPlot({
     
-   
-    
-    #This is the year selected
+    #Year selection
     
     yr_mp <- input$year_mp
     
@@ -231,16 +229,22 @@ server <- function(input, output) {
     
     good <- sort(setdiff(var_mp$country, map_mp$region))
     
+    #Deleting those countries without match
+    
     for(i in 1:length(bad)){
       map_mp <- map_mp %>% mutate(region = if_else(region == bad[i], good[i], region))
     }
     
+    #Mergin the datasets
+    
     df_mp <- left_join(map_mp, var_mp, by = c('region' = 'country'))
     df_mp <- df_mp[!duplicated(df_mp$region), ]
     
-    #Plotting the variablae in the map
+    #Creating the filling variable, as it is necessary as input for the heat map
     
     fill_mp <- df_mp[, (names(df_mp) %in% yr_mp)]
+    
+    #Plotting the variablas in the map with ggplot
     
     ggplot() +
       geom_map(data = map_mp, map = map_mp,
@@ -250,7 +254,7 @@ server <- function(input, output) {
                colour="black", size = 0.5) + labs(fill="") + ggtitle(input$variable_mp) +
       scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','red4')
                            ,values = scales::rescale(c(100,96581,822675,3190373,10000000))
-      ) + xlab("") + ylab("") +
+      ) + xlab("") + ylab("") + #These are all arguments for the theme (aim of make it visible)
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,plot.subtitle = element_text(size = 14)
@@ -295,6 +299,8 @@ server <- function(input, output) {
     df_vda <- df_vda[, -(5:6)]
     colnames(df_vda) <- c("country","income","region", "y", "x")
     
+    #Condition for logarithm scale
+    
     if(input$log_x){
       df_vda$x = log(df_vda$x)
     }
@@ -302,6 +308,8 @@ server <- function(input, output) {
     if(input$log_y){
       df_vda$y = log(df_vda$y)
     }
+    
+    #Condition for regression line and scatter plot
     
     if(input$loess){
       ggplot(data = df_vda, aes(x=x, y=y)) +
@@ -313,6 +321,7 @@ server <- function(input, output) {
                             labels = levels(df_vda$region)) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
+            ,legend.position = "bottom"
             ,axis.text = element_text(color = 'white')
             ,panel.grid = element_blank()
             ,panel.background = element_rect(fill = 'grey30')
@@ -329,6 +338,7 @@ server <- function(input, output) {
                               labels = levels(df_vda$region)) +
         theme(text = element_text(family = 'Gill Sans', color = 'white')
               ,plot.title = element_text(size = 20)
+              ,legend.position = "bottom"
               ,axis.text = element_text(color = 'white')
               ,panel.grid = element_blank()
               ,panel.background = element_rect(fill = 'grey30')
@@ -357,23 +367,24 @@ server <- function(input, output) {
 
     df_uda <- df_uda[, -(5:6)]
     colnames(df_uda) <- c("country","income","region", "var")
-
+    
+    #Condition for logarithm scale
     if(input$log_uda){
       df_uda$var = log(df_uda$var)
     }
+    #Histogram all
     p1 <- ggplot(data = df_uda, aes(var)) +
       geom_histogram(color = 'black', fill = "green3") + xlab(input$variable_uda) + ylab("Counts") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
-            ,legend.position= "bottom"
             ,panel.grid = element_blank()
             ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Boxplot all
     p2 <- ggplot(data = df_uda, aes(y = var)) +
       geom_boxplot(outlier.colour = 'white', color = 'black', fill = "green3") +
       ylab(input$variable_uda) +
@@ -381,14 +392,13 @@ server <- function(input, output) {
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
-            ,legend.position= "bottom"
             ,panel.grid = element_blank()
             ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Density plot all
     p3 <- ggplot(data = df_uda, aes(var)) +
       geom_density(color = 'black', alpha = 0.3, fill = "green3") +
       xlab(input$variable_uda) + ylab("Density") +
@@ -396,13 +406,12 @@ server <- function(input, output) {
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
             ,panel.grid = element_blank()
-            ,legend.position= "bottom"
             ,panel.background = element_rect(fill = 'grey30')
             ,plot.background = element_rect(fill = 'grey30')
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Histogram for income group
     p1_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_histogram(color = 'black') +
       ylab(input$variable_uda) + xlab("Counts") +
@@ -416,7 +425,7 @@ server <- function(input, output) {
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Boxplot for income group
     p2_inc <- ggplot(data = df_uda, aes(x = income, y = var, fill = income)) +
       geom_boxplot(outlier.colour = 'white', color = 'black' ) +
       ylab(input$variable_uda) +
@@ -430,10 +439,10 @@ server <- function(input, output) {
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Density for income group
     p3_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_density(color = 'black', alpha = 0.3) +
-      ylab(input$variable_uda) + xlab("Density") +
+      xlab(input$variable_uda) + ylab("Density") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -444,7 +453,7 @@ server <- function(input, output) {
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Histogram for region
     p1_reg <- ggplot(data = df_uda, aes(var, fill = region)) +
       geom_histogram(color = 'black') +
       ylab(input$variable_uda) + xlab("Counts") +
@@ -458,7 +467,7 @@ server <- function(input, output) {
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Boxplot for region
     p2_reg <- ggplot(data = df_uda, aes(x = region, y = var, fill = region)) +
       geom_boxplot(outlier.colour = 'white', color = 'black' ) +
       ylab(input$variable_uda) +
@@ -472,10 +481,10 @@ server <- function(input, output) {
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Density for region
     p3_reg <- ggplot(data = df_uda, aes(var, fill = region)) +
       geom_density(color = 'black', alpha = 0.3) +
-      ylab(input$variable_uda) + xlab("Density") +
+      xlab(input$variable_uda) + ylab("Density") +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -486,7 +495,7 @@ server <- function(input, output) {
             ,axis.line = element_line(color = 'white')
             ,legend.background = element_blank()
             ,legend.key = element_blank())
-    
+    #Conditions to plot each pot
     if(input$group_uda == "Income"){
       if(input$plotype == "Histogram"){
       p1_inc
@@ -518,7 +527,4 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 
 # Uploading application
-# rsconnect::setAccountInfo(name='antonio-polo',
-#                          token='C596C71EF6D6C63B1417DCFB40F17924',
-#                          secret='bBHmQ2KRZJWTHwtVV7bWBLXScUbNwmZbYEk2QXVV')
 # rsconnect::deployApp()
