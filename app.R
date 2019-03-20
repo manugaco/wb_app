@@ -37,7 +37,8 @@ t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heig
 tgit <- tags$a("GitHub",href="https://github.com/manugaco/Data_Tidying", tags$img(src="github.png",height=20,width=20))
 uni <- tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heigth = 25, width = 25))
 
-# Define UI for application that draws a histogram
+# Define UI for application
+
 ui <- fluidPage(
   theme = shinytheme("slate"),
                 navbarPage(t,
@@ -149,6 +150,7 @@ ui <- fluidPage(
   
 ))
 
+#Defining the server function
 
 server <- function(input, output) {
   
@@ -184,7 +186,7 @@ server <- function(input, output) {
     ts <- data.frame(ts, stringsAsFactors = FALSE)
     ts$region <- round(as.numeric(ts[,2]), 3)
     
-    #Plotting the time series
+    #Plotting the time series using plotly dynamic chart
     
     plot_ly(ts, x = ~year, y = ~region, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
       layout(title = input$country,
@@ -195,9 +197,7 @@ server <- function(input, output) {
   })
   
   output$mp = renderPlot({
-    
    
-    
     #This is the year selected
     
     yr_mp <- input$year_mp
