@@ -316,44 +316,28 @@ server <- function(input, output) {
     
     #Condition for regression line and scatter plot
     
+    #Condition for regression line and scatter plot
     if(input$loess){
-      ggplot(data = df_vda, aes(x=x, y=y)) +
-      geom_point(aes(color = income), size = 2, show.legend = TRUE) + 
-      geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
-      geom_smooth(method = "lm", se = FALSE, colour="skyblue") +
-      xlab(input$variable_2) + ylab(input$variable_1) + 
-      scale_colour_discrete(name = "Income Group", 
-                            breaks = levels(df_vda$income),
-                            labels = levels(df_vda$income)) +
-      theme(text = element_text(family = 'Gill Sans', color = 'white')
-            ,plot.title = element_text(size = 20)
-            ,legend.position = "bottom"
-            ,axis.text = element_text(color = 'white')
-            ,panel.grid = element_blank()
-            ,panel.background = element_rect(fill = 'grey30')
-            ,plot.background = element_rect(fill = 'grey30')
-            ,axis.line = element_line(color = 'white')
-            ,legend.background = element_blank()
-            ,legend.key = element_blank())
+      
+      plot_ly(df_vda, x = ~x, y = ~y, text = ~country, type = 'scatter', mode = 'markers', color = ~income, colors = 'Paired') %>%
+        add_trace(y = fitted(lm(df_vda$y ~ df_vda$x, na.action = na.exclude)), mode = 'line', name = 'Smooth',
+                  line = list(width = 2, color = "skyblue")) %>%
+        layout(title = input$country,
+               yaxis = list(title = input$variable_1, color = 'white'),
+               xaxis = list(title = input$variable_2, tickangle = 45, color = 'white'),
+               plot_bgcolor='rgb(150,150,150)', 
+               paper_bgcolor = 'rgb(100,100,100)')#matching color with the shiny theme (superhero) which is default set.
+      
     }else{
-      ggplot(data = df_vda, aes(x=x, y=y)) +
-        geom_point(aes(color = income), size = 2, show.legend = TRUE) + 
-        geom_text(aes(label = country), check_overlap = TRUE, vjust = 1, hjust = 1, color = "white") +
-        xlab(input$variable_2) + ylab(input$variable_1) + 
-        scale_colour_discrete(name = "Income Group", 
-                              breaks = levels(df_vda$income),
-                              labels = levels(df_vda$income)) +
-        theme(text = element_text(family = 'Gill Sans', color = 'white')
-              ,plot.title = element_text(size = 20)
-              ,legend.position = "bottom"
-              ,axis.text = element_text(color = 'white')
-              ,panel.grid = element_blank()
-              ,panel.background = element_rect(fill = 'grey30')
-              ,plot.background = element_rect(fill = 'grey30')
-              ,axis.line = element_line(color = 'white')
-              ,legend.background = element_blank()
-              ,legend.key = element_blank())
-      }
+      
+      plot_ly(df_vda, x = ~x, y = ~y, text = ~country, type = 'scatter', mode = 'markers', color = ~income, colors = 'Paired') %>%
+        layout(title = input$country,
+               yaxis = list(title = input$variable_1, color = 'white'),
+               xaxis = list(title = input$variable_2, tickangle = 45, color = 'white'),
+               plot_bgcolor='rgb(150,150,150)', 
+               paper_bgcolor = 'rgb(100,100,100)') #matching color with the shiny theme (superhero) which is default set.
+      
+    }
     
   })
   
