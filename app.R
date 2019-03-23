@@ -253,7 +253,8 @@ server <- function(input, output) {
                aes(x = long, y = lat, group = group, map_id = region),
                fill="white", colour="black", size=0.5) +
       geom_map(data = df_mp, map = map_mp, aes(fill = fill_mp, map_id = region),
-               colour="black", size = 0.5) + labs(fill="") + ggtitle(input$variable_mp) +
+               colour="black", size = 0.5) + labs(fill="") + 
+      ggtitle(paste(input$variable_mp, input$year_mp, sep  = " in the year ")) +
       scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','red4')
                            ,values = scales::rescale(c(100,96581,822675,3190373,10000000))
       ) + xlab("") + ylab("") + #These are all arguments for the theme (aim of make it visible)
