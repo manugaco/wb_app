@@ -32,6 +32,7 @@ library(viridis)
 library(gridExtra)
 
 #Access to data, it is marked to upload it to shiny server, if run the app in local, unmark
+
 #source(Data.R)
 
 # Image wb URL 
@@ -102,18 +103,11 @@ ui <- fluidPage(
                                                   label = "Choose variable for x-axis:",
                                                   choices = names(list),
                                                   selected = "GDP per capita (current US$)"),
-                                      sliderInput(inputId = "year_vda",
-                                                  label = "Select Year:",
-                                                  min = 1960,
-                                                  max = 2018,
-                                                  value = 1990),
                                       h6("Select log transformation:"),
                                       checkboxInput("log_x","Log scale x-axis", value = TRUE),
-                                      checkboxInput("log_y","Log scale y-axis", value = TRUE),
-                                      h6("Add regression line:"),
-                                      checkboxInput("loess","Regression line", value = TRUE)),
+                                      checkboxInput("log_y","Log scale y-axis", value = TRUE)),
                                     
-                                    mainPanel(plotOutput("vda")))
+                                    mainPanel(plotlyOutput("vda")))
   ,
                          
                           tabPanel(title="UNIVARIATE DATA VISUALIZATION",icon=icon("bar-chart-o"),
@@ -282,27 +276,36 @@ server <- function(input, output) {
       )
   })
   
-  output$vda = renderPlot({
+  output$vda = renderPlotly({
     
     #Variables
     
     var1 <- list[[input$variable_1]]
     var2 <- list[[input$variable_2]]
     
-    #Years
+    #Year range
     
-    yr_vda <- input$year_vda
+    years <- seq(1960, 2018, by = 1)
     
     #Merging the data in one dataset
 
     var1 <- var1[which(var1$country %nin% setdiff(var1$country, countries)), ]
-    var1 <- var1 %>% select(country, income, region, which(colnames(var1) == yr_vda))
-    var2 <- var2[which(var2$country %nin% setdiff(var2$country, countries)), ]
-    var2 <- var2 %>% select(country, income, region, which(colnames(var2) == yr_vda))
+    var1.1 <- var1 %>% 
+      select(country, income, region)
+    var1.2 <- var1[,(colnames(var1) %in% years)]
+    var1 <- cbind(var1.1, var1.2)
+    var1 <- var1 %>% gather(key = "year", value = v1, which(colnames(var1) %in% years), na.rm = FALSE)
     
-    df_vda <- merge(var1, var2, by = "country")
-    df_vda <- df_vda[, -(5:6)]
-    colnames(df_vda) <- c("country","income","region", "y", "x")
+    var2 <- var2[which(var2$country %nin% setdiff(var2$country, countries)), ]
+    var2.1 <- var2 %>% 
+      select(country, income, region)
+    var2.2 <- var2[,(colnames(var2) %in% years)]
+    var2 <- cbind(var2.1, var2.2)
+    var2 <- var2 %>% gather(key = "year", value = v2, which(colnames(var2) %in% years), na.rm = FALSE)
+    
+    df_vda <- merge(var1, var2, by = c("year", "country"))
+    df_vda <- df_vda %>% select(country, income.x, region.x, year, v1, v2)
+    colnames(df_vda) <- c("country","income","region", "year", "x", "y")
     
     #Condition for logarithm scale
     
@@ -314,30 +317,13 @@ server <- function(input, output) {
       df_vda$y = log(df_vda$y)
     }
     
-    #Condition for regression line and scatter plot
-    
-    #Condition for regression line and scatter plot
-    if(input$loess){
-      
-      plot_ly(df_vda, x = ~x, y = ~y, text = ~country, type = 'scatter', mode = 'markers', color = ~income, colors = 'Paired') %>%
-        add_trace(y = fitted(lm(df_vda$y ~ df_vda$x, na.action = na.exclude)), mode = 'line', name = 'Smooth',
-                  line = list(width = 2, color = "skyblue")) %>%
-        layout(title = input$country,
-               yaxis = list(title = input$variable_1, color = 'white'),
-               xaxis = list(title = input$variable_2, tickangle = 45, color = 'white'),
-               plot_bgcolor='rgb(150,150,150)', 
-               paper_bgcolor = 'rgb(100,100,100)')#matching color with the shiny theme (superhero) which is default set.
-      
-    }else{
-      
-      plot_ly(df_vda, x = ~x, y = ~y, text = ~country, type = 'scatter', mode = 'markers', color = ~income, colors = 'Paired') %>%
-        layout(title = input$country,
-               yaxis = list(title = input$variable_1, color = 'white'),
-               xaxis = list(title = input$variable_2, tickangle = 45, color = 'white'),
-               plot_bgcolor='rgb(150,150,150)', 
-               paper_bgcolor = 'rgb(100,100,100)') #matching color with the shiny theme (superhero) which is default set.
-      
-    }
+    plot_ly(df_vda, x = ~x, y = ~y, text = ~country, frame = ~year, hoverinfo = "text",
+            type = 'scatter', mode = 'markers', color = ~income, colors = 'Paired') %>% 
+      layout(
+        yaxis = list(title = v2, color = 'white'),
+        xaxis = list(title = v1, tickangle = 45, color = 'white'),
+        plot_bgcolor='rgb(150,150,150)', 
+        paper_bgcolor = 'rgb(100,100,100)')
     
   })
   
