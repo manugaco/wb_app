@@ -185,7 +185,8 @@ server <- function(input, output) {
     #Plotting the time series using plotly dynamic chart
     
     plot_ly(ts, x = ~year, y = ~region, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
-      layout(title = input$country,
+      layout(title = paste(input$variable_ts, input$country_ts, sep = " of "),
+             font = list(color = 'white'),
              yaxis = list(title = input$variable_ts, color = 'white'),
              xaxis = list(title = 'year', tickangle = 45, color = 'white'),
              plot_bgcolor='rgb(150,150,150)', 
@@ -228,13 +229,13 @@ server <- function(input, output) {
     
     good <- sort(setdiff(var_mp$country, map_mp$region))
     
-    #Deleting those countries without match
+    #Deleting those countries do not match
     
     for(i in 1:length(bad)){
       map_mp <- map_mp %>% mutate(region = if_else(region == bad[i], good[i], region))
     }
     
-    #Mergin the datasets
+    #Mergin the datasets and deleting duplicated entries
     
     df_mp <- left_join(map_mp, var_mp, by = c('region' = 'country'))
     df_mp <- df_mp[!duplicated(df_mp$region), ]
@@ -287,7 +288,7 @@ server <- function(input, output) {
     
     years <- seq(1960, 2018, by = 1)
     
-    #Merging the data in one dataset
+    #Merging the data in one dataset, some wrangling needed
 
     var1 <- var1[which(var1$country %nin% setdiff(var1$country, countries)), ]
     var1.1 <- var1 %>% 
@@ -319,9 +320,10 @@ server <- function(input, output) {
     
     plot_ly(df_vda, x = ~x, y = ~y, text = ~country, frame = ~year, hoverinfo = "text",
             type = 'scatter', mode = 'markers', color = ~income, colors = 'Paired') %>% 
-      layout(
-        yaxis = list(title = v2, color = 'white'),
-        xaxis = list(title = v1, tickangle = 45, color = 'white'),
+      layout(title = paste(input$variable_2, input$variable_1, sep = " vs "),
+             font = list(color = 'white'),
+        yaxis = list(title = input$variable_2, color = 'white'),
+        xaxis = list(title = input$variable_1, tickangle = 45, color = 'white'),
         plot_bgcolor='rgb(150,150,150)', 
         paper_bgcolor = 'rgb(100,100,100)')
     
