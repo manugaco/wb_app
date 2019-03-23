@@ -1,4 +1,7 @@
 #
+
+#ATTENTION - Run first Data.R to load the dataset and set the envoirement objects
+
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 #
@@ -31,9 +34,9 @@ library(viridisLite)
 library(viridis)
 library(gridExtra)
 
-#Access to data, it is marked to upload it to shiny server, if run the app in local, unmark
+#Access to data, it is unmarked to upload it to the shiny server, if you run the app in local, mark after run Data.R
 
-#source(Data.R)
+load("env.Rdata")
 
 # Image wb URL 
 t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
@@ -41,7 +44,6 @@ tgit <- tags$a("GitHub",href="https://github.com/manugaco/Data_Tidying", tags$im
 uni <- tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heigth = 25, width = 25))
 
 # Define UI for application
-
 ui <- fluidPage(
   theme = shinytheme("slate"),
                 navbarPage(t,
@@ -80,7 +82,7 @@ ui <- fluidPage(
                                                   label = "Select Year:",
                                                   min = 1960,
                                                   max = 2018,
-                                                  value = 1990)
+                                                  value = 2008)
                                       
                                     ),
                                       
@@ -132,7 +134,7 @@ ui <- fluidPage(
                                                  label = "Select Year:",
                                                  min = 1960,
                                                  max = 2018,
-                                                 value = 1990),
+                                                 value = 2008),
                                      h6("Select log transformation:"),
                                      checkboxInput("log_uda","Log scale", value = TRUE)),
            
@@ -167,8 +169,7 @@ server <- function(input, output) {
                 "Macao SAR, China", "Tuvalu", "West Bank and Gaza")
     
     for(i in 1:length(no_pos)){
-      var_ts <- var_ts[!var_ts$country == no_pos[i], ]
-    
+      var_ts <- var_ts[!var_ts$country == no_pos[i],]
     }
     
     #Selecting the country and formating the input of the plot
@@ -191,6 +192,7 @@ server <- function(input, output) {
              xaxis = list(title = 'year', tickangle = 45, color = 'white'),
              plot_bgcolor='rgb(150,150,150)', 
              paper_bgcolor = 'rgb(100,100,100)') #matching color with the shiny theme (superhero) which is default set.
+    
   })
   
   output$mp = renderPlot({
@@ -268,7 +270,7 @@ server <- function(input, output) {
             ,legend.key = element_blank()
       ) +
       annotate(geom = 'text'
-               ,label = 'Source : World Bank Data'
+               ,label = 'Source : World Bank'
                ,x = 18, y = -55
                ,size = 3
                ,family = 'Gill Sans'
@@ -305,8 +307,8 @@ server <- function(input, output) {
     var2 <- var2 %>% gather(key = "year", value = v2, which(colnames(var2) %in% years), na.rm = FALSE)
     
     df_vda <- merge(var1, var2, by = c("year", "country"))
-    df_vda <- df_vda %>% select(country, income.x, region.x, year, v1, v2)
-    colnames(df_vda) <- c("country","income","region", "year", "x", "y")
+    df_vda <- df_vda %>% select(country, income.y, region.y, year, v1, v2)
+    colnames(df_vda) <- c("country","income","region", "year", "y", "x")
     
     #Condition for logarithm scale
     
@@ -318,15 +320,15 @@ server <- function(input, output) {
       df_vda$y = log(df_vda$y)
     }
     
-    plot_ly(df_vda, x = ~x, y = ~y, text = ~country, frame = ~year, hoverinfo = "text",
-            type = 'scatter', mode = 'markers', color = ~income, colors = 'Paired') %>% 
-      layout(title = paste(input$variable_2, input$variable_1, sep = " vs "),
+    hide_guides(plot_ly(df_vda, x = ~x, y = ~y, text = ~country, frame = ~year, hoverinfo = "text",
+            type = 'scatter', mode = 'markers',
+            size = ~x, color = ~x, colors = c('#461863','#404E88','#2A8A8C','#7FD157','red4')) %>%
+      layout(title = paste(input$variable_1, input$variable_2, sep = " vs "),
              font = list(color = 'white'),
-        yaxis = list(title = input$variable_2, color = 'white'),
-        xaxis = list(title = input$variable_1, tickangle = 45, color = 'white'),
-        plot_bgcolor='rgb(150,150,150)', 
-        paper_bgcolor = 'rgb(100,100,100)')
-    
+             yaxis = list(title = input$variable_1, color = 'white'),
+             xaxis = list(title = input$variable_2, tickangle = 45, color = 'white'),
+             plot_bgcolor='rgb(150,150,150)', 
+             paper_bgcolor = 'rgb(100,100,100)', hide_legend = T))
   })
   
   output$uda = renderPlot({
@@ -354,8 +356,9 @@ server <- function(input, output) {
     #Histogram all
     p1 <- ggplot(data = df_uda, aes(var)) +
       geom_histogram(color = 'black', fill = "green3") + xlab(input$variable_uda) + ylab("Counts") +
+      ggtitle(paste("Histogram", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
-            ,plot.title = element_text(size = 20)
+            ,plot.title = element_text(size = 20, color = "white")
             ,axis.text = element_text(color = 'white')
             ,panel.grid = element_blank()
             ,panel.background = element_rect(fill = 'grey30')
@@ -366,6 +369,7 @@ server <- function(input, output) {
     #Boxplot all
     p2 <- ggplot(data = df_uda, aes(y = var)) +
       geom_boxplot(outlier.colour = 'white', color = 'black', fill = "green3") +
+      ggtitle(paste("Boxplot", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       ylab(input$variable_uda) +
       coord_flip() + 
       theme(text = element_text(family = 'Gill Sans', color = 'white')
@@ -381,6 +385,7 @@ server <- function(input, output) {
     p3 <- ggplot(data = df_uda, aes(var)) +
       geom_density(color = 'black', alpha = 0.3, fill = "green3") +
       xlab(input$variable_uda) + ylab("Density") +
+      ggtitle(paste("Density", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -394,6 +399,7 @@ server <- function(input, output) {
     p1_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_histogram(color = 'black') +
       ylab(input$variable_uda) + xlab("Counts") +
+      ggtitle(paste("Income group histograms", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -407,6 +413,7 @@ server <- function(input, output) {
     #Boxplot for income group
     p2_inc <- ggplot(data = df_uda, aes(x = income, y = var, fill = income)) +
       geom_boxplot(outlier.colour = 'white', color = 'black' ) +
+      ggtitle(paste("Income group boxplots", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       ylab(input$variable_uda) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
@@ -422,6 +429,7 @@ server <- function(input, output) {
     p3_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_density(color = 'black', alpha = 0.3) +
       xlab(input$variable_uda) + ylab("Density") +
+      ggtitle(paste("Income group densities", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -436,6 +444,7 @@ server <- function(input, output) {
     p1_reg <- ggplot(data = df_uda, aes(var, fill = region)) +
       geom_histogram(color = 'black') +
       ylab(input$variable_uda) + xlab("Counts") +
+      ggtitle(paste("Region histograms", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -450,6 +459,7 @@ server <- function(input, output) {
     p2_reg <- ggplot(data = df_uda, aes(x = region, y = var, fill = region)) +
       geom_boxplot(outlier.colour = 'white', color = 'black' ) +
       ylab(input$variable_uda) +
+      ggtitle(paste("Region boxplots", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -464,6 +474,7 @@ server <- function(input, output) {
     p3_reg <- ggplot(data = df_uda, aes(var, fill = region)) +
       geom_density(color = 'black', alpha = 0.3) +
       xlab(input$variable_uda) + ylab("Density") +
+      ggtitle(paste("Region densities", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')

@@ -71,7 +71,7 @@ for(i in 1:length(indicators_code)){
   pb$tick()
   indicator <- indicators_name[i]
   var <- WDI(country = "all", indicator = c(indicator =  indicators_code[i]), start = 1960,
-             end = 2018, extra = TRUE)
+  end = 2018, extra = TRUE)
   list[[i]] <- var %>% spread(year, indicator)
 }
 
@@ -84,3 +84,4 @@ names(list) <- indicators_name
 countries_ls <- wbcountries(lang = 'en')
 countries <- countries_ls$country[!is.na(countries_ls$regionID)]
 
+save.image(file = "env.Rdata")
