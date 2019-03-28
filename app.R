@@ -1,5 +1,4 @@
 
-#
 
 #ATTENTION - Run first Data.R to load the dataset and set the envoirement objects (look after libraries lines)
 
@@ -42,12 +41,16 @@ library(htmltools)
 
 #To access to data, run the script Data.R first in local.
 
-#We have done it because it is more efficient to store all the dataset after run the app,
+#We have done this because it is more efficient to store all the dataset after run the app,
 #otherwise it takes much time getting the data (there is one dataset each variable)
+#This is because of the data structure (panel data).
+
+#-------------
 
 #This part is to load the data in shiny server, do not use in local (leave commented load("env.Rdata"))
+#load("env.Rdata")
 
-load("env.Rdata")
+#-------------
 
 # Image wb URL 
 t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
