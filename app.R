@@ -33,6 +33,8 @@ library(ggthemes)
 library(viridisLite)
 library(viridis)
 library(gridExtra)
+library(vembedr)
+library(htmltools)
 
 #Access to data, it is unmarked to upload it to the shiny server, if you run the app in local, mark after run Data.R
 
@@ -47,7 +49,69 @@ uni <- tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heig
 ui <- fluidPage(
   theme = shinytheme("slate"),
                 navbarPage(t,
-                           tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
+                           
+                           tabPanel(title="MAIN WINDOW",icon=icon("fas fa-home"),
+                                      sidebarPanel(
+                                        h3("Testing World Bank API"),
+                                        helpText(" Select a variable, a country and a year, then, the API will call to the World bank indicator database to download the desired information."),
+                                        selectInput(inputId = "searchcountry",
+                                                    label = "Choose country:",
+                                                    choices = countries,
+                                                    selected = "Spain"),
+                                        selectInput(inputId = "searchvariable",
+                                                    label = "Choose variable:",
+                                                    choices = names(list)),
+                                        sliderInput("searchyear", label = "Year", min = 1960, 
+                                                    max = 2018, value = 1960),
+                                        
+                                        br(),
+                                        textOutput("data")
+                                        
+                                        
+                                      )  ,
+                                      
+                                      
+                                      mainPanel(
+                                        img(src="wb.png",align="center",height="133",weight="570")%>%div(align="center"),
+                                        
+                                        br(),
+                                        br(),
+                                        p("The purpose of this project is to perform a Shiny app using data from the Word Bank API 
+                                          with the aim of creating interactive, animated charts and heat maps about economic and demographic data."),
+                                        h2("World Bank API",align="center"),
+                                        
+                                        p("The World Bank API is a source of financial and technical assistance to developing countries 
+                                          around the world. World Bank is not a bank in the ordinary sense but a unique partnership to 
+                                          reduce poverty and support development. The World Bank Group comprises five institutions managed 
+                                          by their member countries"),
+                                        embed_url("https://www.youtube.com/watch?v=gKpTL8KVy1Q&t=214s")%>%div(align = "center"),
+                                        br(),
+                                        
+                                        h2("Source of the data",align="center"),
+                                        p(" The used dataset has been downloaded from the world bank data base by means of the  world bank indicators API."),
+                                        p("This dataset is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:"), 
+                                        p("* Economy and Growth: GDPpc, Inflation, Trade Balance, Goverment debt, consumption and expenses."),
+                                        p("* Demography: Total population, active population, unemployment rate, life expectancy, birth rate and death rate."),
+                                        p("* Education: Education expenses, compulsory education, literacy rate, secondary transitions, trained teachers and repeaters."),
+                                        p("* Trade: Goods trade, tools duties, import terms, international tourism, logistic performance and taxes."),
+                                        p("* Science and tech: High-tech exports, R&D expenses, papers published, Researchers, patents request and intellectual property costs."),
+                                        p("For more information about the API, visit the ",
+                                          a("World Development Indicators.", 
+                                            href = "https://datahelpdesk.worldbank.org")),
+                                        br(),
+                                        
+                                        h2("Sections of the app",align="center"),
+                                        
+                                        p(strong("- Time series "),"of the selected variable and country, being an interactive chart."),
+                                        p(strong("- World heat map ")," representing the selected variable, interactive on time."),
+                                        p(strong("- Animated chart."),"Relevant information such as population, unemployment rate, and so on of a certain country."),
+                                        p(strong("- Exploratory Analysis"),"Descriptive information about a variables (density function, histogram and boxplot), grouped by region or income.")
+                                      )
+                )
+                
+                
+                
+                ,tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
                                     titlePanel("Time Series"),
                                     
                                     sidebarPanel(
@@ -58,10 +122,18 @@ ui <- fluidPage(
                                                   choices = names(list)),
                                       
                                       # Input: Numeric entry for number of obs to view ----
-                                      selectInput(inputId = "country_ts",
+                                      selectInput(inputId = "country_ts1",
                                                   label = "Choose country:",
                                                   choices = countries,
-                                                  selected = "Spain")
+                                                  selected = "Spain"),
+                                      selectInput(inputId = "country_ts2",
+                                                  label = "Choose other country:",
+                                                  choices = countries,
+                                                  selected = "France"),
+                                      selectInput(inputId = "country_ts3",
+                                                  label = "Choose other country:",
+                                                  choices = countries,
+                                                  selected = "United Kingdom")
                                     ),
 
                                     mainPanel(plotlyOutput("tm")))
@@ -91,7 +163,7 @@ ui <- fluidPage(
   ,
                                     
                         
-                           tabPanel(title="BIVARIATE DATA VISUALIZATION",icon=icon("bar-chart-o"),
+                           tabPanel(title="ANIMATED CHART",icon=icon("bar-chart-o"),
                            titlePanel("Bivariate Data Visualization"),
                                     
                            sidebarPanel(
@@ -112,7 +184,7 @@ ui <- fluidPage(
                                     mainPanel(plotlyOutput("vda")))
   ,
                          
-                          tabPanel(title="UNIVARIATE DATA VISUALIZATION",icon=icon("bar-chart-o"),
+                          tabPanel(title="EXPLORATORY ANALYSIS",icon=icon("bar-chart-o"),
                           titlePanel("Univariate Data Visualization"),
            
                           sidebarPanel(
@@ -152,6 +224,17 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   
+  output$data = renderText({
+    var = list[[input$searchvariable]]
+    varyear = input$searchyear
+    varcountry = input$searchcountry
+    index = which(var$country==varcountry)
+    
+    t = round(var[index,as.character(varyear)],3)
+    print(paste0("The value of the desired variable is: ", t))
+    
+  })
+  
   output$tm = renderPlotly({
     
     #This is the variable selection
@@ -173,25 +256,58 @@ server <- function(input, output) {
     }
     
     #Selecting the country and formating the input of the plot
-    
+    c1 <- input$country_ts1
+    c2 <- input$country_ts2
+    c3 <- input$country_ts3
+    cnt <- c(c1, c2, c3)
     rownames(var_ts) <- seq(1, nrow(var_ts), by = 1)
-    df2 <- var_ts[which(var_ts$country == input$country_ts),]
+    df2 <- var_ts[which(var_ts$country %in% cnt),]
     ts <- t(df2[,-(1:9)])
-    ts <- cbind(rownames(ts), ts[,1])
-    colnames(ts) <- c("year", "region")
+    ts <- cbind(rownames(ts), ts[,1:3])
+    colnames(ts) <- c("year", "region1", "region2", "region3")
     rownames(ts) <- seq(1, nrow(ts), by = 1)
     ts <- data.frame(ts, stringsAsFactors = FALSE)
-    ts$region <- round(as.numeric(ts[,2]), 3)
+    cols <- c("region1", "region2", "region3")
+    ts[cols] <- sapply(ts[cols], as.numeric)
     
     #Plotting the time series using plotly dynamic chart
     
-    plot_ly(ts, x = ~year, y = ~region, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
-      layout(title = paste(input$variable_ts, input$country_ts, sep = " of "),
+    plot_ly(ts, x = ~year, y = ~region1, name = input$country_ts1,
+            type = 'scatter', mode = 'lines+markers', line = list(color = 'blue')) %>%
+      add_trace(y = ~region2, name = input$country_ts2, mode = 'lines+markers', line = list(color = 'red')) %>%
+      add_trace(y = ~region3, name = input$country_ts3, mode = 'lines+markers', line = list(color = 'green')) %>%
+      layout(title = input$variable_ts,
              font = list(color = 'white'),
              yaxis = list(title = input$variable_ts, color = 'white'),
-             xaxis = list(title = 'year', tickangle = 45, color = 'white'),
-             plot_bgcolor='rgb(150,150,150)', 
-             paper_bgcolor = 'rgb(100,100,100)') #matching color with the shiny theme (superhero) which is default set.
+             xaxis = list(title = 'year', tickangle = 45, color = 'white',
+                          rangeselector = list(
+                            buttons = list(
+                              list(
+                                count = 3,
+                                label = "3 mo",
+                                step = "month",
+                                stepmode = "backward"),
+                              list(
+                                count = 6,
+                                label = "6 mo",
+                                step = "month",
+                                stepmode = "backward"),
+                              list(
+                                count = 1,
+                                label = "1 yr",
+                                step = "year",
+                                stepmode = "backward"),
+                              list(
+                                count = 1,
+                                label = "YTD",
+                                step = "year",
+                                stepmode = "todate"),
+                              list(step = "all"))),
+                          rangeslider = list(type = "year")
+                          ),
+             plot_bgcolor='rgb(150,150,150)', #matching color with the shiny theme (superhero) which is default set.
+             paper_bgcolor = 'rgb(100,100,100)')
+      
     
   })
   
@@ -357,7 +473,7 @@ server <- function(input, output) {
     #Histogram all
     p1 <- ggplot(data = df_uda, aes(var)) +
       geom_histogram(color = 'black', fill = "green3") + xlab(input$variable_uda) + ylab("Counts") +
-      ggtitle(paste("Histogram", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Histogram", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20, color = "white")
             ,axis.text = element_text(color = 'white')
@@ -370,7 +486,7 @@ server <- function(input, output) {
     #Boxplot all
     p2 <- ggplot(data = df_uda, aes(y = var)) +
       geom_boxplot(outlier.colour = 'white', color = 'black', fill = "green3") +
-      ggtitle(paste("Boxplot", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Boxplot", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       ylab(input$variable_uda) +
       coord_flip() + 
       theme(text = element_text(family = 'Gill Sans', color = 'white')
@@ -386,7 +502,7 @@ server <- function(input, output) {
     p3 <- ggplot(data = df_uda, aes(var)) +
       geom_density(color = 'black', alpha = 0.3, fill = "green3") +
       xlab(input$variable_uda) + ylab("Density") +
-      ggtitle(paste("Density", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Density", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -400,7 +516,7 @@ server <- function(input, output) {
     p1_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_histogram(color = 'black') +
       ylab(input$variable_uda) + xlab("Counts") +
-      ggtitle(paste("Income group histograms", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Income group histograms", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -414,7 +530,7 @@ server <- function(input, output) {
     #Boxplot for income group
     p2_inc <- ggplot(data = df_uda, aes(x = income, y = var, fill = income)) +
       geom_boxplot(outlier.colour = 'white', color = 'black' ) +
-      ggtitle(paste("Income group boxplots", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Income group boxplots", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       ylab(input$variable_uda) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
@@ -430,7 +546,7 @@ server <- function(input, output) {
     p3_inc <- ggplot(data = df_uda, aes(var, fill = income)) +
       geom_density(color = 'black', alpha = 0.3) +
       xlab(input$variable_uda) + ylab("Density") +
-      ggtitle(paste("Income group densities", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Income group densities", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -445,7 +561,7 @@ server <- function(input, output) {
     p1_reg <- ggplot(data = df_uda, aes(var, fill = region)) +
       geom_histogram(color = 'black') +
       ylab(input$variable_uda) + xlab("Counts") +
-      ggtitle(paste("Region histograms", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Region histograms", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -460,7 +576,7 @@ server <- function(input, output) {
     p2_reg <- ggplot(data = df_uda, aes(x = region, y = var, fill = region)) +
       geom_boxplot(outlier.colour = 'white', color = 'black' ) +
       ylab(input$variable_uda) +
-      ggtitle(paste("Region boxplots", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Region boxplots", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
@@ -475,7 +591,7 @@ server <- function(input, output) {
     p3_reg <- ggplot(data = df_uda, aes(var, fill = region)) +
       geom_density(color = 'black', alpha = 0.3) +
       xlab(input$variable_uda) + ylab("Density") +
-      ggtitle(paste("Region densities", paste(input$variable_uda, input$year_uda, sep = " in the year"), sep = " of the ")) +
+      ggtitle(paste("Region densities", paste(input$variable_uda, input$year_uda, sep = " in the year "), sep = " of the ")) +
       theme(text = element_text(family = 'Gill Sans', color = 'white')
             ,plot.title = element_text(size = 20)
             ,axis.text = element_text(color = 'white')
