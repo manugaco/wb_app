@@ -1,6 +1,7 @@
 ## Data Tidying Project
 
 _Antonio Polo de Alvarado - Manuel García Corbí_
+
 _Master in Statistics for Data Science_
 _2018-2019_
 
