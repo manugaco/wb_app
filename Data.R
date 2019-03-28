@@ -65,7 +65,7 @@ indicators_name <- c("GDP per capita (current US$)",
 #Creating the list with the variables of the dataset.
 
 list <- list()
-pb <- progress_bar$new(total = 30)
+pb <- progress_bar$new(format = "Connecting to the World Bank database [:bar] :percent", total = 30)
 
 for(i in 1:length(indicators_code)){
   pb$tick()
