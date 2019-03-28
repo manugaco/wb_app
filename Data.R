@@ -1,4 +1,4 @@
-
+rm(list=ls())
 
 #Loading dataset from World Bank API using the "WDI"
 
@@ -85,3 +85,4 @@ countries_ls <- wbcountries(lang = 'en')
 countries <- countries_ls$country[!is.na(countries_ls$regionID)]
 
 save.image(file = "env.Rdata")
+rm(list=ls())
