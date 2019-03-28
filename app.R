@@ -21,7 +21,7 @@ library(markdown)
 library(plotly)
 library(shiny)
 library(tidyverse)
-library(WDI)
+library(WDI) # World Bank's API
 library(wbstats)
 library(progress)
 library(Hmisc)
@@ -39,10 +39,12 @@ library(htmltools)
 
 #BEFORE RUN THE APP, READ PLEASE:
 
-# The script "Data.R" downloads the world bank dataset. However it takes too much time to connect to the database ,this is 
-# because of the data structure. So the "env.Rdata" file is prepared to set the dataset into the environment instantly.  
+# The script "Data.R" downloads the world bank dataset by means of the world bank API. However it takes too much time to download the database,
+# this is  because of the data structure. So the "env.Rdata" file is prepared to set the dataset into the environment instantly.
+# In case of testing the download of the dataset, remove the comment from the following line:
 
 # source("Data.R")
+
 load("env.Rdata")
 
 #-------------
@@ -51,6 +53,7 @@ load("env.Rdata")
 t    <-    tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
 tgit <-    tags$a("GitHub",href="https://github.com/manugaco/Data_Tidying", tags$img(src="github.png",height=20,width=20))
 uni  <-    tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heigth = 25, width = 25))
+
 
 # Define UI for application
 ui <- fluidPage(
