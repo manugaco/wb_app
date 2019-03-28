@@ -39,7 +39,7 @@ library(htmltools)
 
 #Access to data, it is unmarked to upload it to the shiny server, if you run the app in local, mark after run Data.R
 
-#load("env.Rdata")
+load("env.Rdata")
 
 # Image wb URL 
 t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
@@ -48,228 +48,183 @@ uni <- tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heig
 
 # Define UI for application
 ui <- fluidPage(
-  theme = shinytheme("flatly"),
-                navbarPage(t,tabPanel(title="MAIN WINDOW",icon=icon("fas fa-home"),
-                                      sidebarPanel(
-                                        h3("Testing World Bank API"),
-                                        helpText(" Select a variable, a country and a year, then, the API will call to the World bank indicator database to download the desired information."),
-                                        selectInput(inputId = "searchcountry",
-                                                    label = "Choose country:",
-                                                    choices = countries,
-                                                    selected = "Spain"),
-                                        selectInput(inputId = "searchvariable",
-                                                    label = "Choose variable:",
-                                                    choices = names(list)),
-                                        sliderInput("searchyear", label = "Year", min = 1960, 
-                                                    max = 2018, value = 1960),
-                                        
-                                        br(),
-                                        textOutput("data")
-                                        
-                                        
-                                      )  ,
-                                      
-                                      
-                           tabPanel(title="MAIN WINDOW",icon=icon("fas fa-home"),
-                                    sidebarPanel(
-                                      h3("Testing world bank indicator API"),
-                                      helpText(" Select a variable, a country and a year, then, the API will call to the World bank indicator database to download the desired information."),
-                                      selectInput(inputId = "searchcountry",
-                                                  label = "Choose country:",
-                                                  choices = countries,
-                                                  selected = "Spain"),
-                                      selectInput(inputId = "searchvariable",
-                                                  label = "Choose variable:",
-                                                  choices = names(list)),
-                                      sliderInput("searchyear", label = "Year", min = 1960, 
-                                                  max = 2018, value = 1960),
-                                      
-                                      br(),
-                                      textOutput("data")
-                                      
-                                      
-                                    )  ,
-                                    
-                                    
-
-                                      mainPanel(
-                                        img(src="wb.png",align="center",height="133",weight="570")%>%div(align="center"),
-                                        
-                                        br(),
-                                        br(),
-
-                                        p("The purpose of this project is to perform a Shiny app using data from the Word Bank API 
-                                          with the aim of creating interactive, animated charts and heat maps about economic and demographic data."),
-                                        h2("World Bank API",align="center"),
-                                        
-                                        p("The World Bank API is a source of financial and technical assistance to developing countries 
-                                          around the world. World Bank is not a bank in the ordinary sense but a unique partnership to 
-                                          reduce poverty and support development. The World Bank Group comprises five institutions managed 
-                                          by their member countries"),
-                                        embed_url("https://www.youtube.com/watch?v=gKpTL8KVy1Q&t=214s")%>%div(align = "center"),
-                                        br(),
-                                        
-                                        h2("Source of the data",align="center"),
-                                        p("The purpose of this project is to perform a Shiny app using data from the Word Bank with the aim of creating interactive and heat maps about economic and demographic data."),
-                                        h2("What is the world bank?",align="center"),
-
-                                        p("The World Bank is a vital source of financial and technical assistance to developing countries around the world. It is not a bank in the ordinary sense but a unique partnership to reduce poverty and support development. The World Bank Group comprises five institutions managed by their member countries"),
-                                        embed_url("https://www.youtube.com/watch?v=gKpTL8KVy1Q&t=214s")%>%div(align = "center"),
-                                        br(),
-                                   
-                                        h2("What is the source of the data?",align="center"),
-                                        p(" The used dataset has been downloaded from the world bank data base by means of the  world bank indicators API."),
-                                        p("This dataset is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:"), 
-                                        p("* Economy and Growth: GDPpc, Inflation, Trade Balance, Goverment debt, consumption and expenses."),
-                                        p("* Demography: Total population, active population, unemployment rate, life expectancy, birth rate and death rate."),
-                                        p("* Education: Education expenses, compulsory education, literacy rate, secondary transitions, trained teachers and repeaters."),
-                                        p("* Trade: Goods trade, tools duties, import terms, international tourism, logistic performance and taxes."),
-                                        p("* Science and tech: High-tech exports, R&D expenses, papers published, Researchers, patents request and intellectual property costs."),
-                                        p("For more information about the API, visit the ",
-                                          a("World Development Indicators.", 
-                                            href = "https://datahelpdesk.worldbank.org")),
-                                        br(),
-                                        
-                                        h2("Sections of the app",align="center"),
-                                        
-                                        p(strong("- Time series "),"of the selected variable and country, being an interactive chart."),
-                                        p(strong("- World heat map ")," representing the selected variable, interactive on time."),
-                                        p(strong("- Animated chart."),"Relevant information such as population, unemployment rate, and so on of a certain country."),
-                                        p(strong("- Exploratory Analysis"),"Descriptive information about a variables (density function, histogram and boxplot), grouped by region or income.")
-                                      )
-                )
-                
-                
-                
-                ,tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
-                                
-                                        h2("What types of plots does this app contain?",align="center"),
-                                      
-                                        p(strong("- Time series "),"of the selected variable and country, being an interactive chart."),
-                                        p(strong("- World heat map ")," representing the selected variable, interactive on time."),
-                                        p(strong("- Bivariate plot."),"Relevant information such as population, unemployment rate, and so on of a certain country."),
-                                        p(strong("- Univariate plot"),"Descriptive information about the variables (densities functions, histograms and boxplots), grouped by region or income.")
-                                      )
-                                    )
-                                    
-                           
-                           
-                           ,tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
-                                    titlePanel("Time Series"),
-                                    
-                                    sidebarPanel(
-                                      
-                                      # Input: Selector for choosing dataset ----
-                                      selectInput(inputId = "variable_ts",
-                                                  label = "Choose variable:",
-                                                  choices = names(list)),
-                                      
-                                      # Input: Numeric entry for number of obs to view ----
-                                      selectInput(inputId = "country_ts1",
-                                                  label = "Choose country:",
-                                                  choices = countries,
-                                                  selected = "Spain"),
-                                      selectInput(inputId = "country_ts2",
-                                                  label = "Choose other country:",
-                                                  choices = countries,
-                                                  selected = "France"),
-                                      selectInput(inputId = "country_ts3",
-                                                  label = "Choose other country:",
-                                                  choices = countries,
-                                                  selected = "United Kingdom")
-                                    ),
-
-                                    mainPanel(plotlyOutput("tm")))
-                           
-  ,
-                                    
-                           
-                           tabPanel(title="WORLD HEAT MAP",icon=icon("far fa-globe"),
-                                    titlePanel("World Heat Map"),
-                                    
-                                    sidebarPanel(
-                                      
-                                      # Input: Selector for choosing dataset ----
-                                      selectInput(inputId = "variable_mp",
-                                                  label = "Choose variable:",
-                                                  choices = names(list)),
-                                      sliderInput(inputId = "year_mp",
-                                                  label = "Select Year:",
-                                                  min = 1960,
-                                                  max = 2018,
-                                                  value = 2008)
-                                      
-                                    ),
-                                      
-                     
-                                    mainPanel(plotOutput("mp")))
-  ,
-                                    
+  theme = shinytheme("superhero"),
+  navbarPage(t,
+             tabPanel(title="MAIN WINDOW",icon=icon("fas fa-home"),
+                      sidebarPanel(
+                        h3("Testing World Bank API"),
+                        helpText(" Select a variable, a country and a year, then, the API will call to the World bank indicator database to download the desired information."),
+                        selectInput(inputId = "searchcountry",
+                                    label = "Choose country:",
+                                    choices = countries,
+                                    selected = "Spain"),
+                        selectInput(inputId = "searchvariable",
+                                    label = "Choose variable:",
+                                    choices = names(list)),
+                        sliderInput("searchyear", label = "Year", min = 1960, 
+                                    max = 2018, value = 1960),
                         
-                           tabPanel(title="ANIMATED CHART",icon=icon("bar-chart-o"),
-                           titlePanel("Bivariate Data Visualization"),
-                                    
-                           sidebarPanel(
-                                      
-                                      # Input: Selector for choosing dataset ----
-                                      selectInput(inputId = "variable_1",
-                                                  label = "Choose variable for y-axis:",
-                                                  choices = names(list),
-                                                  selected = "Life expectancy at birth, total (years)"),
-                                      selectInput(inputId = "variable_2",
-                                                  label = "Choose variable for x-axis:",
-                                                  choices = names(list),
-                                                  selected = "GDP per capita (current US$)"),
-                                      h6("Select log transformation:"),
-                                      checkboxInput("log_x","Log scale x-axis", value = TRUE),
-                                      checkboxInput("log_y","Log scale y-axis", value = TRUE)),
-                                    
-                                    mainPanel(plotlyOutput("vda")))
-  ,
-                         
-                          tabPanel(title="EXPLORATORY ANALYSIS",icon=icon("bar-chart-o"),
-                          titlePanel("Univariate Data Visualization"),
-           
-                          sidebarPanel(
+                        br(),
+                        textOutput("data")
+                        
+                        
+                      )  ,
+                      
+                      
+                      mainPanel(
+                        img(src="wb.png",align="center",height="133",weight="570")%>%div(align="center"),
+                        
+                        br(),
+                        br(),
+                        p("The purpose of this project is to perform a Shiny app using data from the Word Bank with the aim of creating interactive and heat maps about economic and demographic data."),
+                        h2("What is the world bank?",align="center"),
+                        
+                        p("The World Bank API is a source of financial and technical assistance to developing countries 
+                          around the world. The World Bank is not a bank in the ordinary sense but a unique partnership to reduce poverty 
+                          and support development. The World Bank Group comprises five institutions managed by their member 
+                          countries"),
+                        embed_url("https://www.youtube.com/watch?v=gKpTL8KVy1Q&t=214s")%>%div(align = "center"),
+                        br(),
+                        
+                        h2("Source of Data",align="center"),
+                        p(" The used dataset has been downloaded from the world bank data base by means of the  world bank indicators API."),
+                        p("This dataset is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:"), 
+                        p("* Economy and Growth: GDPpc, Inflation, Trade Balance, Goverment debt, consumption and expenses."),
+                        p("* Demography: Total population, active population, unemployment rate, life expectancy, birth rate and death rate."),
+                        p("* Education: Education expenses, compulsory education, literacy rate, secondary transitions, trained teachers and repeaters."),
+                        p("* Trade: Goods trade, tools duties, import terms, international tourism, logistic performance and taxes."),
+                        p("* Science and tech: High-tech exports, R&D expenses, papers published, Researchers, patents request and intellectual property costs."),
+                        p("For more information about the API, visit the ",
+                          a("World Development Indicators.", 
+                            href = "https://datahelpdesk.worldbank.org")),
+                        br(),
+                        
+                        h2("App Content",align="center"),
+                        
+                        p(strong("- Time series "),"of the selected variable and country, being an interactive chart."),
+                        p(strong("- World heat map ")," representing the selected variable, interactive on time."),
+                        p(strong("- Animated plot "),"Relevant information such as population, unemployment rate, and so on of a certain country."),
+                        p(strong("- Exploratory Analysis "),"Descriptive information about the variables (density functions, histograms and boxplots), grouped by region or income.")
+                      )
+             )
              
-                                     # Input: Selector for choosing dataset ----
-                                     selectInput(inputId = "variable_uda",
-                                                 label = "Choose variable:",
-                                                 choices = names(list),
-                                                 selected = "GDP per capita (current US$)"),
-                                     selectInput(inputId = "group_uda",
-                                                 label = "Group by:",
-                                                 choices = c("Income", "Region", "None"),
-                                                 selected = "None"),
-                                     selectInput(inputId = "plotype",
-                                                 label = "Select plot type:",
-                                                 choices = c("Boxplot", "Histogram", "Density"), 
-                                                 selected = "Density"),
-                                     sliderInput(inputId = "year_uda",
-                                                 label = "Select Year:",
-                                                 min = 1960,
-                                                 max = 2018,
-                                                 value = 2008),
-                                     h6("Select log transformation:"),
-                                     checkboxInput("log_uda","Log scale", value = TRUE)),
-           
-                                    mainPanel(plotOutput("uda")))
-  ,
-                           navbarMenu(title="INFO",icon=icon("far fa-info"),
-                              tabPanel(tgit)
+             
+             
+             ,tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
+                       titlePanel("Time Series"),
+                       
+                       sidebarPanel(
                          
-                          
-                             ),
-                           
-                          tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs")
-                                   ,mainPanel(shinythemes::themeSelector()))
-  
-))
+                         # Input: Selector for choosing dataset ----
+                         selectInput(inputId = "variable_ts",
+                                     label = "Choose variable:",
+                                     choices = names(list)),
+                         
+                         # Input: Numeric entry for number of obs to view ----
+                         selectInput(inputId = "country_ts1",
+                                     label = "Choose country:",
+                                     choices = countries,
+                                     selected = "Spain"),
+                         selectInput(inputId = "country_ts2",
+                                     label = "Choose country:",
+                                     choices = countries,
+                                     selected = "France"),
+                         selectInput(inputId = "country_ts3",
+                                     label = "Choose country:",
+                                     choices = countries,
+                                     selected = "United Kingdom")
+                       ),
+                       
+                       mainPanel(plotlyOutput("tm")))
+             
+             ,
+             
+             
+             tabPanel(title="WORLD HEAT MAP",icon=icon("far fa-globe"),
+                      titlePanel("World Heat Map"),
+                      
+                      sidebarPanel(
+                        
+                        # Input: Selector for choosing dataset ----
+                        selectInput(inputId = "variable_mp",
+                                    label = "Choose variable:",
+                                    choices = names(list)),
+                        sliderInput(inputId = "year_mp",
+                                    label = "Select Year:",
+                                    min = 1960,
+                                    max = 2018,
+                                    value = 2008)
+                        
+                      ),
+                      
+                      
+                      mainPanel(plotOutput("mp")))
+             ,
+             
+             
+             tabPanel(title="ANIMATED CHART",icon=icon("bar-chart-o"),
+                      titlePanel("Bivariate Data Visualization"),
+                      
+                      sidebarPanel(
+                        
+                        # Input: Selector for choosing dataset ----
+                        selectInput(inputId = "variable_1",
+                                    label = "Choose variable for y-axis:",
+                                    choices = names(list),
+                                    selected = "Life expectancy at birth, total (years)"),
+                        selectInput(inputId = "variable_2",
+                                    label = "Choose variable for x-axis:",
+                                    choices = names(list),
+                                    selected = "GDP per capita (current US$)"),
+                        h6("Select log transformation:"),
+                        checkboxInput("log_x","Log scale x-axis", value = TRUE),
+                        checkboxInput("log_y","Log scale y-axis", value = TRUE)),
+                      
+                      mainPanel(plotlyOutput("vda")))
+             ,
+             
+             tabPanel(title="EXPLORATORY ANALYSIS",icon=icon("bar-chart-o"),
+                      titlePanel("Univariate Data Visualization"),
+                      
+                      sidebarPanel(
+                        
+                        # Input: Selector for choosing dataset ----
+                        selectInput(inputId = "variable_uda",
+                                    label = "Choose variable:",
+                                    choices = names(list),
+                                    selected = "GDP per capita (current US$)"),
+                        selectInput(inputId = "group_uda",
+                                    label = "Group by:",
+                                    choices = c("Income", "Region", "None"),
+                                    selected = "None"),
+                        selectInput(inputId = "plotype",
+                                    label = "Select plot type:",
+                                    choices = c("Boxplot", "Histogram", "Density"), 
+                                    selected = "Density"),
+                        sliderInput(inputId = "year_uda",
+                                    label = "Select Year:",
+                                    min = 1960,
+                                    max = 2018,
+                                    value = 2008),
+                        h6("Select log transformation:"),
+                        checkboxInput("log_uda","Log scale", value = TRUE)),
+                      
+                      mainPanel(plotOutput("uda")))
+             ,
+             navbarMenu(title="INFO",icon=icon("far fa-info"),
+                        tabPanel(tgit)
+                        
+                        
+             ),
+             
+             tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs")
+                      ,mainPanel(shinythemes::themeSelector()))
+             
+  ))
 
 #Defining the server function
 server<-function(input,output){
 
-  
   output$data = renderText({
     var=list[[input$searchvariable]]
     varyear = input$searchyear
@@ -280,22 +235,6 @@ server<-function(input,output){
     print(paste0("The value of the desired variable is: ", t))
     
     })
-                  
-                              
-                   
-                               
-
-  
-  output$data = renderText({
-    var = list[[input$searchvariable]]
-    varyear = input$searchyear
-    varcountry = input$searchcountry
-    index = which(var$country==varcountry)
-    
-    t = round(var[index,as.character(varyear)],3)
-    print(paste0("The value of the desired variable is: ", t))
-    
-  })
   
   output$tm = renderPlotly({
     
@@ -304,10 +243,10 @@ server<-function(input,output){
     var_ts <- list[[input$variable_ts]]
     
     #Selecting those countries that are available in the dataset
-    var_ts = var_ts[which(var_ts$country %nin% setdiff(var_ts$country, countries)), ]
+    var_ts <- var_ts[which(var_ts$country %nin% setdiff(var_ts$country, countries)), ]
     
     #Selecting those countries that are available in the dataset
-    var = var[which(var$country %nin% setdiff(var$country, countries)), ]
+    var <- var[which(var$country %nin% setdiff(var$country, countries)), ]
     
     #Deleting countries without position information
     no_pos <- c("Channel Islands","Eswatini", "Gibraltar", "Hong Kong SAR, China", "Korea, Dem. People’s Rep.",
@@ -321,6 +260,7 @@ server<-function(input,output){
     c1 <- input$country_ts1
     c2 <- input$country_ts2
     c3 <- input$country_ts3
+    
     cnt <- c(c1, c2, c3)
     rownames(var_ts) <- seq(1, nrow(var_ts), by = 1)
     df2 <- var_ts[which(var_ts$country %in% cnt),]
