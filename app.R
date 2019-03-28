@@ -38,9 +38,17 @@ library(gridExtra)
 library(vembedr)
 library(htmltools)
 
-#Access to data, it is unmarked to upload it to the shiny server, if you run the app in local, mark after run Data.R
+#Access to data, it is marked to upload it to the shiny server, if you run the app in local, unmark
+#source("Data.R")
 
-source("Data.R")
+
+#Or run the script Data.R once, to store the data in local.
+#We have done it because it is more efficient to store all the dataset after run the app,
+#otherwise it takes much time getting the data (there is one dataset each variable)
+
+#This part is to load the data in shiny server, do not use in local (leave commented load("env.Rdata"))
+
+load("env.Rdata")
 
 # Image wb URL 
 t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
@@ -78,7 +86,7 @@ ui <- fluidPage(
                         br(),
                         br(),
                         p("The purpose of this project is to perform a Shiny app using data from the Word Bank with the aim of creating interactive and heat maps about economic and demographic data."),
-                        h2("What is the world bank?",align="center"),
+                        h2("World Bank API",align="center"),
                         
                         p("The World Bank is a source of financial and technical assistance to developing countries 
                           around the world. The World Bank is not a bank in the ordinary sense but a unique partnership to reduce poverty 
