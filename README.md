@@ -30,4 +30,4 @@ https://manugaco.shinyapps.io/project/
 
 
 **_Information about the World Bank API:_**
-_The script "Data.R" downloads the world bank dataset by means of the world bank API. However it takes too much time to download the database,this is  because of the data structure. So the "env.Rdata" file is prepared to set the dataset into the environment instantly._
+_The script "Data.R" downloads the world bank dataset by means of the world bank API. However it takes too much time to download the dataset, this is  because of the data structure. So the "env.Rdata" file is prepared to set the dataset into the environment instantly._
