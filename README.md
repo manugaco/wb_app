@@ -1,6 +1,8 @@
 ## Data Tidying Project
 
 _Antonio Polo de Alvarado - Manuel García Corbí_
+_Master in Statistics for Data Science_
+_2018-2019_
 
 The purpose of this project is to perform a Shiny app using data from the Word Bank, in order to create interactive and heat maps about economic and demographic data.
 
