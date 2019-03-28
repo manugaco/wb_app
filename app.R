@@ -39,23 +39,18 @@ library(htmltools)
 
 #BEFORE RUN THE APP, READ PLEASE:
 
-#To access to data, run the script Data.R first in local.
+# The script "Data.R" downloads the world bank dataset. However it takes too much time to connect to the database ,this is 
+# because of the data structure. So the "env.Rdata" file is prepared to set the dataset into the environment instantly.  
 
-#We have done this because it is more efficient to store all the dataset after run the app,
-#otherwise it takes much time getting the data (there is one dataset each variable)
-#This is because of the data structure (panel data).
-
-#-------------
-
-#This part is to load the data in shiny server, do not use in local (leave commented load("env.Rdata"))
-#load("env.Rdata")
+# source("Data.R")
+load("env.Rdata")
 
 #-------------
 
 # Image wb URL 
-t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
-tgit <- tags$a("GitHub",href="https://github.com/manugaco/Data_Tidying", tags$img(src="github.png",height=20,width=20))
-uni <- tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heigth = 25, width = 25))
+t    <-    tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
+tgit <-    tags$a("GitHub",href="https://github.com/manugaco/Data_Tidying", tags$img(src="github.png",height=20,width=20))
+uni  <-    tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heigth = 25, width = 25))
 
 # Define UI for application
 ui <- fluidPage(
@@ -88,9 +83,9 @@ ui <- fluidPage(
                         br(),
                         br(),
                         p("The purpose of this project is to perform a Shiny app using data from the Word Bank with the aim of creating interactive and heat maps about economic and demographic data."),
-                        h2("World Bank API",align="center"),
+                        h2("World Bank ",align="center"),
                         
-                        p("The World Bank API is a source of financial and technical assistance to developing countries 
+                        p("The World Bank  is a source of financial and technical assistance to developing countries 
                           around the world. The World Bank is not a bank in the ordinary sense but a unique partnership to reduce poverty 
                           and support development. The World Bank Group comprises five institutions managed by their member 
                           countries"),

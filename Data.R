@@ -1,3 +1,8 @@
+
+# BEFORE RUN THE APP, READ PLEASE:
+# This file download the dataset from the world bank database by means of the API
+
+
 rm(list=ls())
 
 #Loading dataset from World Bank API using the "WDI"
