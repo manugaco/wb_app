@@ -1,7 +1,7 @@
 
 #
 
-#ATTENTION - Run first Data.R to load the dataset and set the envoirement objects
+#ATTENTION - Run first Data.R to load the dataset and set the envoirement objects (look after libraries lines)
 
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
@@ -38,11 +38,10 @@ library(gridExtra)
 library(vembedr)
 library(htmltools)
 
-#Access to data, it is marked to upload it to the shiny server, if you run the app in local, unmark
-#source("Data.R")
+#BEFORE RUN THE APP, READ PLEASE:
 
+#To access to data, run the script Data.R first in local.
 
-#Or run the script Data.R once, to store the data in local.
 #We have done it because it is more efficient to store all the dataset after run the app,
 #otherwise it takes much time getting the data (there is one dataset each variable)
 
