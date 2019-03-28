@@ -88,7 +88,7 @@ ui <- fluidPage(
                         p("The purpose of this project is to perform a Shiny app using data from the Word Bank with the aim of creating interactive and heat maps about economic and demographic data."),
                         h2("World Bank API",align="center"),
                         
-                        p("The World Bank is a source of financial and technical assistance to developing countries 
+                        p("The World Bank API is a source of financial and technical assistance to developing countries 
                           around the world. The World Bank is not a bank in the ordinary sense but a unique partnership to reduce poverty 
                           and support development. The World Bank Group comprises five institutions managed by their member 
                           countries"),
