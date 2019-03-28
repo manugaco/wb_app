@@ -12,6 +12,7 @@
 
 # Different modules of our application
 
+library(DT)
 library(shiny)
 library(rsconnect)
 library(shinythemes)
@@ -38,7 +39,7 @@ library(htmltools)
 
 #Access to data, it is unmarked to upload it to the shiny server, if you run the app in local, mark after run Data.R
 
-load("env.Rdata")
+#load("env.Rdata")
 
 # Image wb URL 
 t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
@@ -47,10 +48,8 @@ uni <- tags$a(href= "https://www.uc3m.es/Inicio" , tags$img(src="uc3m.png", heig
 
 # Define UI for application
 ui <- fluidPage(
-  theme = shinytheme("slate"),
-                navbarPage(t,
-                           
-                           tabPanel(title="MAIN WINDOW",icon=icon("fas fa-home"),
+  theme = shinytheme("flatly"),
+                navbarPage(t,tabPanel(title="MAIN WINDOW",icon=icon("fas fa-home"),
                                       sidebarPanel(
                                         h3("Testing World Bank API"),
                                         helpText(" Select a variable, a country and a year, then, the API will call to the World bank indicator database to download the desired information."),
@@ -71,11 +70,34 @@ ui <- fluidPage(
                                       )  ,
                                       
                                       
+                           tabPanel(title="MAIN WINDOW",icon=icon("fas fa-home"),
+                                    sidebarPanel(
+                                      h3("Testing world bank indicator API"),
+                                      helpText(" Select a variable, a country and a year, then, the API will call to the World bank indicator database to download the desired information."),
+                                      selectInput(inputId = "searchcountry",
+                                                  label = "Choose country:",
+                                                  choices = countries,
+                                                  selected = "Spain"),
+                                      selectInput(inputId = "searchvariable",
+                                                  label = "Choose variable:",
+                                                  choices = names(list)),
+                                      sliderInput("searchyear", label = "Year", min = 1960, 
+                                                  max = 2018, value = 1960),
+                                      
+                                      br(),
+                                      textOutput("data")
+                                      
+                                      
+                                    )  ,
+                                    
+                                    
+
                                       mainPanel(
                                         img(src="wb.png",align="center",height="133",weight="570")%>%div(align="center"),
                                         
                                         br(),
                                         br(),
+
                                         p("The purpose of this project is to perform a Shiny app using data from the Word Bank API 
                                           with the aim of creating interactive, animated charts and heat maps about economic and demographic data."),
                                         h2("World Bank API",align="center"),
@@ -88,6 +110,14 @@ ui <- fluidPage(
                                         br(),
                                         
                                         h2("Source of the data",align="center"),
+                                        p("The purpose of this project is to perform a Shiny app using data from the Word Bank with the aim of creating interactive and heat maps about economic and demographic data."),
+                                        h2("What is the world bank?",align="center"),
+
+                                        p("The World Bank is a vital source of financial and technical assistance to developing countries around the world. It is not a bank in the ordinary sense but a unique partnership to reduce poverty and support development. The World Bank Group comprises five institutions managed by their member countries"),
+                                        embed_url("https://www.youtube.com/watch?v=gKpTL8KVy1Q&t=214s")%>%div(align = "center"),
+                                        br(),
+                                   
+                                        h2("What is the source of the data?",align="center"),
                                         p(" The used dataset has been downloaded from the world bank data base by means of the  world bank indicators API."),
                                         p("This dataset is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:"), 
                                         p("* Economy and Growth: GDPpc, Inflation, Trade Balance, Goverment debt, consumption and expenses."),
@@ -112,6 +142,19 @@ ui <- fluidPage(
                 
                 
                 ,tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
+                                
+                                        h2("What types of plots does this app contain?",align="center"),
+                                      
+                                        p(strong("- Time series "),"of the selected variable and country, being an interactive chart."),
+                                        p(strong("- World heat map ")," representing the selected variable, interactive on time."),
+                                        p(strong("- Bivariate plot."),"Relevant information such as population, unemployment rate, and so on of a certain country."),
+                                        p(strong("- Univariate plot"),"Descriptive information about the variables (densities functions, histograms and boxplots), grouped by region or income.")
+                                      )
+                                    )
+                                    
+                           
+                           
+                           ,tabPanel(title="TIME SERIES",icon=icon("fas fa-chart-line"),
                                     titlePanel("Time Series"),
                                     
                                     sidebarPanel(
@@ -213,7 +256,10 @@ ui <- fluidPage(
                                     mainPanel(plotOutput("uda")))
   ,
                            navbarMenu(title="INFO",icon=icon("far fa-info"),
-                              tabPanel(tgit)),
+                              tabPanel(tgit)
+                         
+                          
+                             ),
                            
                           tabPanel(title="SETTINGS" , icon=icon("fas fa-cogs")
                                    ,mainPanel(shinythemes::themeSelector()))
@@ -221,8 +267,24 @@ ui <- fluidPage(
 ))
 
 #Defining the server function
+server<-function(input,output){
 
-server <- function(input, output) {
+  
+  output$data = renderText({
+    var=list[[input$searchvariable]]
+    varyear = input$searchyear
+    varcountry = input$searchcountry
+    index=which(var$country==varcountry)
+    
+    t=var[index,as.character(varyear)]
+    print(paste0("The value of the desired variable is: ", t))
+    
+    })
+                  
+                              
+                   
+                               
+
   
   output$data = renderText({
     var = list[[input$searchvariable]]
