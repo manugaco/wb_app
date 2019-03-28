@@ -40,7 +40,7 @@ library(htmltools)
 
 #Access to data, it is unmarked to upload it to the shiny server, if you run the app in local, mark after run Data.R
 
-source("env.Rdata")
+source("Data.R")
 
 # Image wb URL 
 t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
