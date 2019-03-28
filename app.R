@@ -40,7 +40,7 @@ library(htmltools)
 
 #Access to data, it is unmarked to upload it to the shiny server, if you run the app in local, mark after run Data.R
 
-# source("env.Rdata")
+source("env.Rdata")
 
 # Image wb URL 
 t <- tags$a(href= "https://data.worldbank.org" , tags$img(src="bwlogo.png", heigth = 25, width = 25))
@@ -213,7 +213,34 @@ ui <- fluidPage(
                       mainPanel(plotOutput("uda")))
              ,
              navbarMenu(title="INFO",icon=icon("far fa-info"),
-                        tabPanel(tgit)
+                        tabPanel(tgit),
+                        tabPanel(title = "REFERENCES",icon=icon("fas fa-question-circle"),
+                                 sidebarPanel(  h1("References"),
+                                   p("Shinny app guide:",a( "https://shiny.rstudio.com/gallery/", href="https://shiny.rstudio.com/gallery/")),
+                                   p("World Bank API :",a( "https://datahelpdesk.worldbank.org", href="https://datahelpdesk.worldbank.org")),
+                                   p("Plotly Shinny examples:",a( "https://plot.ly/r/shiny-tutorial/", href="https://plot.ly/r/shiny-tutorial/")),
+                                   p("World Bank Page:",a( "https://www.worldbank.org/", href="https://www.worldbank.org/"))
+                                 )
+                               
+                                 
+                                 ),
+                        tabPanel(title="GROUP MEMBERS",icon=icon("fas fa-users"),
+                                 
+                                 h1("GROUP MEMBERS"),
+                                 
+                                 img(src="0.jpeg",align="center",height="133",weight="570")%>%div(align="center"),
+                                 br(),
+                                 h3("Manuel García Corbí")%>%div(align="center"),
+                                 p("Linkedin: ", a("https://www.linkedin.com/in/manugaco/",href="https://www.linkedin.com/in/manugaco/"))%>%div(align="center"),
+                                 br(),
+                                 img(src="1.jpeg",align="center",height="133",weight="570")%>%div(align="center"),
+                                 br(),
+                                 h3("Antonio Polo de Alvarado")%>%div(align="center"),
+                                 p("Linkedin: ", a("https://www.linkedin.com/in/antoniopolodealvarado/",href="https://www.linkedin.com/in/antoniopolodealvarado/"))%>%div(align="center")
+                                 
+                                 
+                                 
+                                 )
                         
                         
              ),
