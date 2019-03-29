@@ -15,14 +15,17 @@ The data that we are going to use is made up with information about topics such 
  - Trade: Goods trade, tools duties, import terms, international tourism, logistic performance and taxes.
  - Science and tech: High-tech exports, R&D expenses, papers published, Researchers, patents request and intellectual property costs.
 
-The app will contain the following information:
+The app contains the following information:
 
- - First section: Name of the country and some relevant information such as population, unemployment rate, and so on.
- - Second section: Descriptive information about the variables (potentially, scatter plots and distribution charts)
- - Third section: Time series of the selected variable and country, interactive chart.
- - Four section: World heat map, representing the selected variable, interactive on time.
+ - First section: Brief description about the app and source of information
+ - Second section: Time Series chart, including up to three different countries, one variable
+ - Third section: Heat Map, representing one variable with the possibility to choose different years
+ - Fourth section: Animated chart, useful to compare two variables aling time
+ - Fifth section: Exploratory Analysis, includes different non-parametric visualizations.
+ - Sixth section: Info, link to this repository and information about the authors
+ - Seventh section: Settings, change the app style.
 
-This is the link to the App:
+The app can be visualize using this link:
 
 https://manugaco.shinyapps.io/project/
 
