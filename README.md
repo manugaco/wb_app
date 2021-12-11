@@ -1,4 +1,4 @@
-## Data Tidying Project
+## Shiny App
 
 _Antonio Polo de Alvarado - Manuel García Corbí_
 
