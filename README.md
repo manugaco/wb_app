@@ -5,7 +5,7 @@ _Antonio Polo de Alvarado - Manuel García Corbí_
 _Master in Statistics for Data Science_
 _2018-2019_
 
-The purpose of this project is to perform a Shiny app using data from the Word Bank, in order to create interactive and heat maps about economic and demographic data.
+The purpose of this project is to create a Shiny app using data from the Word Bank website, in order to create visualizations about economic and demographic data.
 
 The data that we are going to use is made up with information about topics such as Ecomomic growth, Demographics and education, in particular:
 
